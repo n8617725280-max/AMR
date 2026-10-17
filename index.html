@@ -1,0 +1,1091 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#1456a0"><link rel="icon" href="/icon.svg"><title>AMR Health Care – Clinic Management</title>
+<style>
+:root{--g:#1456a0;--g2:#0c3a6e;--gl:#e3edf8;--b:#1556a5;--bl:#e5edf9;--p:#5b4bb5;--o:#d9820f;--ol:#fbf0dd;--r:#b83227;--t:#17211c;--m:#5b6a62;--ln:#d5dfd9;--bg:#f0f4f2;--w:#fff}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font:14px/1.45 "Segoe UI","Noto Sans","Nirmala UI",Arial,sans-serif;color:var(--t);background:var(--bg)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--b);outline-offset:1px}
+.shell{display:grid;grid-template-columns:232px 1fr;min-height:100vh}
+.side{background:linear-gradient(180deg,var(--g),var(--g2));color:#fff;padding:14px 10px;position:sticky;top:0;height:100vh;overflow:auto;display:flex;flex-direction:column}
+.brand{display:flex;gap:10px;align-items:center;padding:4px 6px 14px;border-bottom:1px solid rgba(255,255,255,.18);margin-bottom:10px}
+.brand b{display:block;font-size:17px;letter-spacing:.3px}
+.brand small{font-size:11px;opacity:.8}
+.brand .lg{background:#fff;border-radius:50%;width:44px;height:44px;display:grid;place-items:center;overflow:hidden;flex:none}
+.brand .lg img,.brand .lg svg{width:40px;height:40px;object-fit:contain}
+.nav button{display:block;width:100%;text-align:left;background:none;border:0;color:#d9eadf;padding:9px 12px;border-radius:6px;cursor:pointer;margin:1px 0}
+.nav button:hover{background:rgba(255,255,255,.1)}
+.nav button.on{background:#fff;color:var(--g);font-weight:700}
+.side .help{margin-top:auto;font-size:12px;padding:10px 8px 2px;border-top:1px solid rgba(255,255,255,.18);color:#cfe3d7}
+.side .help a{color:#fff;font-weight:700;text-decoration:none}
+.main{min-width:0;display:flex;flex-direction:column}
+.top{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:10px 20px;background:#fff;border-bottom:1px solid var(--ln);flex-wrap:wrap}
+.top h1{font-size:19px;margin:0}
+.top .r{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;font-size:12px;font-weight:600;border:1px solid var(--ln);background:#fff;cursor:default}
+.chip i{width:8px;height:8px;border-radius:50%;background:#999;display:inline-block}
+.chip.ok{background:var(--gl);border-color:#b6d7c3;color:var(--g)} .chip.ok i{background:var(--g)}
+.chip.warn{background:var(--ol);border-color:#ecd1a1;color:#8a5200} .chip.warn i{background:var(--o)}
+.chip.bad{background:#fbe6e3;border-color:#efbdb7;color:var(--r)} .chip.bad i{background:var(--r)}
+.view{padding:18px 20px;flex:1}
+.foot{padding:10px 20px;font-size:12px;color:var(--m);border-top:1px solid var(--ln);background:#fff}
+.foot a{color:var(--b);font-weight:600;text-decoration:none}
+.card{background:#fff;border:1px solid var(--ln);border-radius:8px;padding:14px;margin-bottom:14px}
+.card h2{font-size:15px;margin:0 0 10px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+label.f{display:block;font-size:12px;color:var(--m);font-weight:600}
+input,select,textarea{width:100%;padding:8px 9px;border:1px solid var(--ln);border-radius:6px;background:#fff;margin-top:3px}
+input[type=checkbox],input[type=radio]{width:auto;margin:0 5px 0 0}
+input[readonly]{background:#f3f6f4}
+.btn{background:var(--b);color:#fff;border:0;border-radius:6px;padding:9px 14px;font-weight:600;cursor:pointer;white-space:nowrap}
+.btn:hover{filter:brightness(1.08)}
+.btn.g{background:var(--g)} .btn.o{background:var(--o)} .btn.l{background:#fff;color:var(--t);border:1px solid var(--ln)} .btn.r{background:var(--r)} .btn.s{padding:4px 9px;font-size:12px}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:14px}
+.stat{border-radius:8px;color:#fff;padding:14px 16px}
+.stat b{display:block;font-size:28px;line-height:1.1}
+.stat span{font-size:12.5px;opacity:.95}
+.s1{background:#1b7a4e}.s2{background:var(--b)}.s3{background:var(--p)}.s4{background:var(--o)}.s5{background:#4a5b53}.s6{background:#0f6f86}
+.acts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.acts button{padding:16px 10px;font-size:14px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:7px 9px;text-align:left;border-bottom:1px solid var(--ln);vertical-align:top}
+th{background:var(--gl);font-size:12px;color:var(--g2);white-space:nowrap}
+td.n,th.n{text-align:right;white-space:nowrap}
+.tw{overflow-x:auto}
+tr.del td{opacity:.45;text-decoration:line-through}
+.tag{display:inline-block;padding:1px 8px;border-radius:99px;font-size:11.5px;font-weight:700}
+.tag.opd{background:var(--bl);color:var(--b)} .tag.lab{background:#ece8fa;color:var(--p)} .tag.cmb{background:var(--ol);color:#8a5200}
+.due{color:var(--r);font-weight:700}
+.muted{color:var(--m)}
+.em{padding:14px;color:var(--m);text-align:center}
+.tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.tabs button{flex:1;min-width:150px;padding:11px;border:2px solid var(--ln);background:#fff;border-radius:8px;font-weight:700;cursor:pointer}
+.tabs button.on{border-color:var(--g);background:var(--gl);color:var(--g)}
+.sugw{position:relative}
+.sug{position:absolute;z-index:20;left:0;right:0;background:#fff;border:1px solid var(--ln);border-radius:6px;max-height:240px;overflow:auto;box-shadow:0 4px 14px rgba(0,0,0,.12);display:none}
+.sug div{padding:7px 10px;cursor:pointer;border-bottom:1px solid #eef2ef}
+.sug div:hover{background:var(--gl)}
+.res{border:1px solid var(--ln);border-radius:6px;max-height:260px;overflow:auto;margin-top:4px;display:none}
+.res div{display:flex;justify-content:space-between;gap:8px;padding:7px 10px;cursor:pointer;border-bottom:1px solid #eef2ef}
+.res div:hover{background:var(--gl)}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.pills button{border:1px solid var(--ln);background:#fff;border-radius:99px;padding:3px 11px;cursor:pointer;font-size:12.5px}
+.pills button.on{background:var(--g);color:#fff;border-color:var(--g)}
+.tot{display:grid;grid-template-columns:1fr auto;gap:4px 18px;max-width:340px;margin-left:auto}
+.tot b.big{font-size:18px}
+.banner{padding:9px 12px;border-radius:6px;margin-bottom:12px;background:var(--ol);border:1px solid #ecd1a1;color:#6d4300;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.banner.bad{background:#fbe6e3;border-color:#efbdb7;color:var(--r)}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:6px;align-items:center}
+#toast div{background:#17211c;color:#fff;padding:9px 16px;border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+#toast div.bad{background:var(--r)}
+.modalbg{position:fixed;inset:0;background:rgba(10,25,18,.55);z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:24px 12px;overflow:auto}
+.modal{background:#fff;border-radius:10px;padding:16px;width:100%;max-width:560px}
+.modal.wide{max-width:900px}
+.modal h2{margin:0 0 10px;font-size:17px}
+.mfoot{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+.login{min-height:100vh;display:grid;place-items:center;padding:16px;background:linear-gradient(160deg,var(--g2),var(--g))}
+.login .box{background:#fff;border-radius:12px;padding:26px;width:100%;max-width:380px}
+.login .lg{display:flex;justify-content:center;margin-bottom:6px}
+.login .lg svg,.login .lg img{width:72px;height:72px;object-fit:contain}
+.login h1{font-size:19px;text-align:center;margin:4px 0 2px;color:var(--g)}
+.login p{text-align:center;margin:0 0 14px;color:var(--m);font-size:12.5px}
+.err{color:var(--r);font-size:13px;margin-top:8px;min-height:18px}
+pre.sql{background:#13211a;color:#cfe9d9;padding:12px;border-radius:6px;overflow:auto;font-size:12px;white-space:pre-wrap}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:3px 10px}
+@media(max-width:900px){
+ .shell{grid-template-columns:1fr}
+ .side{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;padding:8px}
+ .brand{border:0;margin:0;padding:0 8px 0 0}.nav{display:flex;flex-wrap:wrap;gap:2px}.nav button{width:auto;padding:7px 10px}.side .help{display:none}
+ .view{padding:12px}.kv{grid-template-columns:1fr}
+}
+/* ---------- print documents ---------- */
+.poster .lg svg,.poster .lg img{width:92px;height:92px;object-fit:contain}
+#printArea{display:none}
+.flag{font-weight:800;color:var(--r)}
+.rp{width:100%;min-height:281mm;display:flex;flex-direction:column;font-family:Arial,"Nirmala UI","Noto Sans",sans-serif;font-size:12.5px;color:#000}
+.rp.prev{min-height:0}
+.rp-box{border:1px dotted #777;padding:4px 8px;margin-bottom:8px}
+.rp-box table{width:100%}.rp-box td{border:0;padding:1px 6px 1px 0;font-size:12.5px}
+.rp-box td.k{font-weight:700;white-space:nowrap;width:1%}
+.rp .bc{width:200px;height:30px;display:block;margin-left:auto;fill:#000}
+.rp-dept{border:1.5px solid #000;text-align:center;font-weight:700;padding:2px;margin-top:6px}
+.rp-t{border-collapse:collapse}
+.rp-t th{text-align:left;font-size:12px;text-decoration:underline;border:0;background:none;color:#000;padding:4px 6px}
+.rp-t td{border:0;padding:5px 6px;vertical-align:top;font-size:12.5px}
+.rp-t .n{font-size:13px}.rp-t .s{font-size:11px;color:#333}
+.rp-sec{page-break-inside:avoid}
+.rp-note{font-size:11.5px;margin:4px 6px}
+.rp-m{font-size:12px;margin:10px 4px 0}
+.rp-sigs{display:flex;justify-content:space-between;margin-top:26px;padding:0 20px}
+.rp-sig{min-width:200px;font-size:12px;text-align:center;line-height:1.35}
+.rp-sig img{height:48px;max-width:220px;object-fit:contain;display:block;margin:0 auto 2px}
+.rp-foot{margin-top:auto;padding-top:14px}
+.rp-bar{color:#fff;font-size:11px;padding:3px 8px;margin-top:6px;text-align:left}
+.rc,.sl{color:#000;font-family:Arial,"Nirmala UI","Noto Sans",sans-serif}
+.rc{width:100%;font-size:12px}
+.rh{display:flex;gap:10px;align-items:center}
+.rh .lg svg,.rh .lg img{width:62px;height:62px;object-fit:contain}
+.rt1 .g{font-size:30px;font-weight:800;color:#1456a0;letter-spacing:.5px}
+.rt1 .r{font-size:17px;font-weight:600;color:#d63a3a;margin-left:4px}
+.ra{font-size:12px}
+.rc .bc{width:220px;height:34px;display:block;margin-left:auto;fill:#000}
+.rtitle{text-align:right;font-weight:800;font-size:16px;text-decoration:underline;margin:4px 0}
+.rmeta{display:flex;justify-content:space-between;gap:18px;border-bottom:1px solid #999;padding-bottom:4px;margin-bottom:6px}
+.rmeta table{width:auto}.rmeta td{border:0;padding:1px 6px 1px 0;font-size:12px}
+.rmeta td:first-child{white-space:nowrap}
+.rmeta .rtbl td:nth-child(2){padding-right:10px}
+.rc .items{border-collapse:separate}
+.rc .items th{background:none;color:#000;border-top:2px solid #000;border-bottom:2px solid #000;font-size:12px;padding:5px 6px}
+.rc .items td{border:0;padding:2px 6px;font-size:12px}
+.rc .items th:first-child{border-left:2px solid #000;border-top-left-radius:16px;border-bottom-left-radius:16px}
+.rc .items th:last-child{border-right:2px solid #000;border-top-right-radius:16px;border-bottom-right-radius:16px}
+.rbot{display:flex;justify-content:space-between;gap:20px;margin-top:6px}
+.rbot table{width:auto}.rbot td{border:0;padding:1px 8px 1px 0;font-size:12.5px}
+.rtot td{border:0;padding:1px 0 1px 18px;text-align:right}
+.rtot tr.l td{border-top:1px solid #000}
+.rnote{text-align:center;font-weight:700;font-size:12px;margin-top:10px;border-top:1px dotted #555;padding-top:4px}
+.sl{width:100%;max-width:560px;border:3px double #1456a0;padding:8px 12px;font-size:13.5px;color:#1456a0;background:#fff}
+.sl .h{display:flex;gap:8px;align-items:center}
+.sl .h .lg svg,.sl .h .lg img{width:46px;height:46px;object-fit:contain}
+.sl .h b{font-size:19px;display:block;line-height:1.1;letter-spacing:-.3px}
+.sl .h span{font-size:12px;display:block;color:#1456a0}
+.sl .ln{display:flex;gap:10px;align-items:baseline;margin:6px 0}
+.sl .ln u{flex:1;text-decoration:none;border-bottom:1px dotted #1456a0;min-height:16px;color:#000;font-weight:600;padding-left:4px}
+.sl .nb{background:#1456a0;color:#fff;font-size:12px;padding:5px 8px;flex:1;line-height:1.35}
+.sl .sg{display:flex;gap:10px;align-items:flex-end;margin-top:6px}
+.sl .sg i{font-weight:700;white-space:nowrap}
+.sl .ft{border-top:2px solid #1456a0;margin-top:6px;padding-top:3px;font-size:12px;font-weight:700;text-align:center}
+@media print{
+ body.printing #app,body.printing #toast,body.printing .modalbg{display:none!important}
+ body.printing #printArea{display:block}
+ body.printing{background:#fff}
+}
+</style>
+<style id="pg"></style>
+</head>
+<body>
+<div id="app"></div>
+<div id="printArea"></div>
+<div id="toast"></div>
+<script>
+'use strict';
+/* ===== AMR Health Care — Clinic Management (offline-first) ===== */
+const HELP_PHONE='7602292599';
+const BRAND={app:'amr-clinic',db:'amr_clinic',name:'AMR',tag:'Health Care',full:'AMR Health Care',file:'AMR',mono:'AMR',
+ set:{clinicName:'AMR',sub:'HEALTH CARE',addr:'CHANCHAL COURT MORE, CHANCHAL, MALDA, W.B.-732123',recPhones:'9475972794 / 035130291060',email:'amrhealthcare2022@gmail.com',slipAddr:'Chanchal Court More, Chanchal, Malda',slipPhones:'9475972794 / 035130291060',billPrefix:'AMR',pidFmt:'AMR/{n}',slipNotice:'',slipFooter:'',tokNotice:'Tell this Token No. at the reception and pay the fee.',repMachine:'SEMI AUTO ANALYZER MICROLAB 300',accent:'#e0762b',barColor:'#1565c0'},
+ users:[{id:'u-admin',name:'Admin',role:'admin',pin:'1234'},{id:'u-recep',name:'RECEPTION',role:'opd',pin:'1111'},{id:'u-lab',name:'LAB',role:'lab',pin:'2222'}],
+ signers:[{name:'DR. S. KUMAR',kind:'pathologist',deg:'MD PATHOLOGY',reg:'Reg. No. WBMC - 68694'},{name:'ABU SUFIAN',kind:'technician',deg:'LAB TECHNICIAN (B.M.L.T.)'}]};/*BRANDEND*/
+const STORES=['doctors','tests','bills','patients','users','audit','tokens','reports','signers','config','settings','meta'];
+const SYNCED=['doctors','tests','bills','patients','users','audit','tokens','reports','signers','config'];
+const TESTS=[{"n":"8AMC","r":0},{"n":"ABSOLUTE E CNT","r":0},{"n":"URINE ACR","r":0},{"n":"ADA","r":0},{"n":"AFB 1st","r":0},{"n":"AFB 2nd","r":0},{"n":"AFB 3rd","r":0},{"n":"AFP","r":0},{"n":"ALBUMIN","r":0},{"n":"ALDEHYDE TEST","r":0},{"n":"ALKALINE PHOSPHATASE (ALP)","r":0},{"n":"AMH","r":0},{"n":"AMYLASE","r":0},{"n":"ANA","r":0},{"n":"ANTI CCP","r":0},{"n":"ANTI DS DNA","r":0},{"n":"ANTI HAV IGM","r":0},{"n":"ANTI HBC IGM","r":0},{"n":"ANTI HCV (QUANTITATIVE)","r":0},{"n":"ANTI TPO- AB","r":0},{"n":"APLA","r":0},{"n":"APTT","r":0},{"n":"ASO SLIDE","r":0},{"n":"ASO TITRE","r":0},{"n":"B-HCG","r":0},{"n":"BILIRUBIN","r":0},{"n":"BLOOD GROUP","r":0},{"n":"BSF","r":0},{"n":"BSP (1 HRS.30 MIN AFTER MEAL)","r":0},{"n":"BSPP","r":0},{"n":"BSR","r":0},{"n":"BTCT","r":0},{"n":"C PEPTIDE FASTING","r":0},{"n":"C PEPTIDE P.P","r":0},{"n":"C3","r":0},{"n":"C4","r":0},{"n":"CA+(CALCIUM)","r":0},{"n":"CA-125","r":0},{"n":"CA-19.9","r":0},{"n":"CBC","r":0},{"n":"CHLORIDE","r":0},{"n":"CHOLES TOTAL","r":0},{"n":"CITRATE VIAL","r":0},{"n":"COMPLETE HAEMOGRAM","r":0},{"n":"CPK","r":0},{"n":"CPK-MB","r":0},{"n":"CREATININE","r":0},{"n":"CRP(QUANT)","r":0},{"n":"D DIMER","r":0},{"n":"DC","r":0},{"n":"DENGUE IgG & IgM","r":0},{"n":"DENGUE IGM","r":0},{"n":"DENGUE NS1","r":0},{"n":"Dengue NS1 Elisa","r":0},{"n":"DIRECT BILIRUBIN","r":0},{"n":"ECG","r":0},{"n":"URIC ACID","r":0},{"n":"URINE ACR","r":0},{"n":"URINE ALBUMIN","r":0},{"n":"URINE C/S TEST","r":0},{"n":"URINE RE/ME","r":0},{"n":"URINE STRIP POT","r":0},{"n":"URINE SUGAR","r":0},{"n":"USG FPP","r":0},{"n":"USG KUB","r":0},{"n":"USG LA","r":0},{"n":"USG OF SCORTUM+TESTIS","r":0},{"n":"USG PELVIS","r":0},{"n":"USG PREGNANCY","r":0},{"n":"USG UA","r":0},{"n":"USG W/A+PREGNANCY","r":0},{"n":"USG WA","r":0},{"n":"VDRL","r":0},{"n":"VITAMIN B12","r":0},{"n":"VITAMIN D 25","r":0},{"n":"VITAMIN D3","r":0},{"n":"VLDL","r":0},{"n":"WA WITH PREG","r":0},{"n":"WIDAL SLIDE","r":0},{"n":"X-CHEST P.A VIEW","r":0},{"n":"X-RAY MANDIBLE LATERAL VIEW","r":0},{"n":"X-RAY ABDOMEN","r":0},{"n":"X-RAY ANKEL JOINT AP/LAT LEFT","r":0},{"n":"X-RAY ANKEL JOINT AP/LAT RIGH","r":0},{"n":"ECG 12 LEAD","r":0},{"n":"ESR","r":0},{"n":"FERITIRIN","r":0},{"n":"FREE INSULINE","r":0},{"n":"FREE T3","r":0},{"n":"FREE T4","r":0},{"n":"FSH","r":0},{"n":"G6PD","r":0},{"n":"GLOBULIN","r":0},{"n":"HAV IGM","r":0},{"n":"HB","r":0},{"n":"HB.TC.DC","r":0},{"n":"HB.TC.DC.ESR","r":0},{"n":"HBA1C","r":0},{"n":"HBEAG (QUANTITATIVE)","r":0},{"n":"HBSAG","r":0},{"n":"HBSAG (QUANTITATIVE)","r":0},{"n":"HBV DNA (QUALITATIVE)","r":0},{"n":"HBV DNA (QUANTITATIVE)","r":0},{"n":"HCG","r":0},{"n":"HCV","r":0},{"n":"HDL CHOLESTEROL","r":0},{"n":"HEPATO BILIARY SYSTEM","r":0},{"n":"HEV IGM","r":0},{"n":"HIV I & II","r":0},{"n":"HLAB 27","r":0},{"n":"HPLC","r":0},{"n":"IGE","r":0},{"n":"X-RAY ARM AP/LAT LEFT","r":0},{"n":"X-RAY ARM AP/LAT RIGHT","r":0},{"n":"X-RAY BOTH HIP JOINT AP/LAT","r":0},{"n":"X-RAY BOTH HIP JONT AP","r":0},{"n":"X-RAY BOTH KNEE JOINT AP/LAT","r":0},{"n":"X-RAY CALCENUS AP/ LET LEFT","r":0},{"n":"X-RAY CALCENUS AP/ LET RIGHT","r":0},{"n":"X-RAY CERVICAL SPAIN AP/LAT","r":0},{"n":"X-RAY CHEST AP","r":0},{"n":"X-RAY CHEST AP VIEW","r":0},{"n":"X-RAY CHEST AP/LAT","r":0},{"n":"X-RAY CHEST LAT LEFT","r":0},{"n":"X-RAY CHEST LAT RIGHT","r":0},{"n":"X-RAY CLAVICLE A.P/ LAT LEFT","r":0},{"n":"X-RAY CLAVICLE A.P/ LAT RIGHT","r":0},{"n":"X-RAY DORSO LUMBER SPINE(THORACIC) A.P/","r":0},{"n":"X-RAY ELBOW JOINT AP/LAT LEFT","r":0},{"n":"X-RAY ELBOW JOINT AP/LAT RIGHT","r":0},{"n":"X-RAY FEMUR A.P. / LATERAL VIEW LEFT","r":0},{"n":"X-RAY FEMUR A.P. / LATERAL VIEW RIGHT","r":0},{"n":"X-RAY FOOT AP/LAT LEFT","r":0},{"n":"X-RAY FOOT AP/LAT RIGHT","r":0},{"n":"X-RAY FOREAM A.P./ LATERAL VIEW LEFT","r":0},{"n":"X-RAY FOREAM A.P./ LATERAL VIEW RIGHT","r":0},{"n":"X-RAY HAND AP/LAT LEFT","r":0},{"n":"INDIRECT BILIRUBIN","r":0},{"n":"IPTH","r":0},{"n":"IRON","r":0},{"n":"K+(Potassium)","r":0},{"n":"LA WITH PREG","r":0},{"n":"LDH","r":0},{"n":"LDL","r":0},{"n":"LFT","r":0},{"n":"LH","r":0},{"n":"LIPASE","r":0},{"n":"LIPID PROFILE","r":0},{"n":"MANTOU 10 TU","r":0},{"n":"MANTOU 5 TU","r":0},{"n":"Mg+(Magnesium)","r":0},{"n":"MP","r":0},{"n":"MP ANTIGEN","r":0},{"n":"NA+ AND K+","r":0},{"n":"NA+(SODIUM)","r":0},{"n":"NECK AP VIEW","r":0},{"n":"OBSTETRICE","r":0},{"n":"P. TIME","r":0},{"n":"PCV","r":0},{"n":"PELVIS","r":0},{"n":"PERIPHERAL","r":0},{"n":"PLATELETS COUNT","r":0},{"n":"PREGNANCY","r":0},{"n":"PROLACTIN","r":0},{"n":"PSA","r":0},{"n":"PUSC","r":0},{"n":"X-RAY HAND AP/LAT RIGHT","r":0},{"n":"X-RAY HAND AP/OBLIQUE LEFT","r":0},{"n":"X-RAY HAND AP/OBLIQUE RIGHT","r":0},{"n":"X-RAY HIP JOINT AP/LAT LEFT","r":0},{"n":"X-RAY HIP JOINT AP/LAT RIGHT","r":0},{"n":"X-RAY HIP JOINT LAT LEFT","r":0},{"n":"X-RAY HIP JOINT LAT RIGHT","r":0},{"n":"X-RAY ILIAC JONT A.P. VIEW","r":0},{"n":"X-RAY ILIAC JONT LATERAL VIEW","r":0},{"n":"X-RAY K.U.B.","r":0},{"n":"X-RAY KNEE JOINT AP/LAT LEFT","r":0},{"n":"X-RAY KNEE JOINT AP/LAT RIGHT","r":0},{"n":"X-RAY LEFT FEMUR A.P. / LATERAL VIEW","r":0},{"n":"X-RAY LEG AP/LAT LEFT","r":0},{"n":"X-RAY LEG AP/LAT RIGHT","r":0},{"n":"X-RAY LUMBER SPINE AP/LAT","r":0},{"n":"X-RAY MANDIBLE A.P VIEW","r":0},{"n":"X-RAY MASTOID LATERAL VIEW","r":0},{"n":"X-RAY NASAL BONE BOTH LATERAL VIEW","r":0},{"n":"X-RAY NECK AP/LAT","r":0},{"n":"X-RAY ORBIT AP. VIEW","r":0},{"n":"X-RAY ORBIT LATERAL VIEW","r":0},{"n":"X-RAY P.N.S. ( OM ) VIEW","r":0},{"n":"X-RAY PELVIS A.P. VIEW","r":0},{"n":"X-RAY PELVIS LATERAL VIEW","r":0},{"n":"RA FACTOR","r":0},{"n":"RA SLIDE","r":0},{"n":"RBC","r":0},{"n":"RENAL SYSTEM","r":0},{"n":"RETICULOCYTE COUNT","r":0},{"n":"RK-39","r":0},{"n":"SGOT/ AST","r":0},{"n":"SGPT/ALT","r":0},{"n":"STOOL","r":0},{"n":"STOOL OBT","r":0},{"n":"SYNOVIAL FLUID","r":0},{"n":"T3","r":0},{"n":"T4","r":0},{"n":"TC(WBC)","r":0},{"n":"TC.DC","r":0},{"n":"TC.DC.ESR","r":0},{"n":"TESTOSTERON","r":0},{"n":"TIBC","r":0},{"n":"TOTAL BILIRUBIN","r":0},{"n":"TOTAL PROTEIN","r":0},{"n":"TRIGLYCERIDES","r":0},{"n":"TROP T","r":0},{"n":"TSAT","r":0},{"n":"TSH","r":0},{"n":"TSH MEDICITY","r":0},{"n":"TUMOR BIOPSY 2 BLOCK","r":0},{"n":"TUMOR BIOPSY 1 BLOCK","r":0},{"n":"TYPHI DOT","r":0},{"n":"UREA","r":0},{"n":"X-RAY RADIUS ALNA AP/LAT LEFT","r":0},{"n":"X-RAY RADIUS ALNA AP/LAT RIGHT","r":0},{"n":"X-RAY RIGHT FEMUR A.P. / LATERAL VIEW","r":0},{"n":"X-RAY SHOULDER JOINT AP/LAT LEFT","r":0},{"n":"X-RAY SHOULDER JOINT AP/LAT RIGHT","r":0},{"n":"X-RAY SKULL AP/LAT VIEW","r":0},{"n":"X-RAY SKULL LAT VIEW","r":0},{"n":"X-RAY SOFT TISSUE NECK A.P. VIEW","r":0},{"n":"X-RAY SOFT TISSUE NECK LATERAL VIEW","r":0},{"n":"X-RAY WRIST AP/LAT LEFT","r":0},{"n":"X-RAY WRIST AP/LAT RIGHT","r":0},{"n":"SUGAR FASTING","r":0},{"n":"SUGAR PP (2 Hours after full meal)","r":0},{"n":"WIDAL","r":0}];
+const DOCTORS=[
+{name:'Dr. Md. Mobassir Hossain',deg:'MBBS (Kol), MD (Medicine) Kol',spec:'MD Physician – Thyroid & Sugar',fee:300,timing:'10:00 AM – 12:00 PM',dow:[1,2,3,4,5,6],weeks:[]},
+{name:'Dr. Smith Nath',deg:'MD (Gen. Med.), DM (Nephro) NRSMCH',spec:'Nephrologist & Transplant Physician',fee:300,timing:'12:30 PM onwards',dow:[0],weeks:[1]},
+{name:'Dr. D. Bhakta',deg:'MBBS, MD (PMR)',spec:'Rheumatology & Rehabilitation',fee:300,timing:'02:00 PM – 04:00 PM',dow:[1],weeks:[1,3]},
+{name:'Dr. Md. Mujahid',deg:'MBBS (CMC), MS (R.G. Kar)',spec:'General & Laparoscopic Surgeon',fee:300,timing:'10:00 AM – 01:00 PM',dow:[1,2,3,4,6],weeks:[]},
+{name:'Dr. Bikramjit Das',deg:'MBBS (Kol), MS (General Surgeon, Kol)',spec:'General Surgeon',fee:300,timing:'04:00 PM – 06:00 PM',dow:[4,5],weeks:[]},
+{name:'Dr. M. Mojibur Rahman',deg:'MBBS (Kol), MS (Ortho), IPGME&R (Kol)',spec:'Orthopedic Surgeon',fee:300,timing:'',dow:[5,6],weeks:[]},
+{name:'Dr. Pritam Roy Chowdhury',deg:'MBBS (Kol), MD Paediatric (Kol), IAP Fellow (CMC Vellore)',spec:'Child Specialist',fee:300,timing:'Wed 9 AM–1 PM, Sat 11 AM–2 PM',dow:[3,6],weeks:[]},
+{name:'Dr. Sneha Chakraborty',deg:'MBBS, MS (OBS & GYNAE)',spec:'Gynaecologist & Obstetrician',fee:300,timing:'Sun 12 PM, Thu 5 PM',dow:[0,4],weeks:[]},
+{name:'Dr. Makhdum Reza',deg:'MBBS, MD (Skin)',spec:'Dermatologist',fee:300,timing:'Mon 4:30–6, Thu 11–2 & 5–6, Sat 4–6',dow:[1,4,6],weeks:[]},
+{name:'Dr. S. N. Dutta',deg:'MD (Medicine), MD (Cardiology)',spec:'Cardiologist',fee:300,timing:'09:00 AM onwards',dow:[0],weeks:[2]},
+{name:'Dr. Amit Kumar Goswami',deg:'MBBS (Kol), MD (Kol), DNB (Kol), DM (Neuro Medicine)',spec:'Neuro Physician',fee:300,timing:'09:00 AM onwards',dow:[3],weeks:[3]},
+{name:'Dr. Sayak Chattopadhyay',deg:'MS, M.Ch (Neuro)',spec:'Neuro Surgeon',fee:300,timing:'12:30 PM onwards',dow:[0],weeks:[2,4]},
+{name:'Dr. Asim Kumar Mallick',deg:'MD (Psychiatry)',spec:'Neuro Psychiatrist',fee:300,timing:'12:30 PM onwards',dow:[0],weeks:[2,4]}
+];
+const DN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const WK=['','1st','2nd','3rd','4th','5th'];
+
+
+let idb=null,D={doctors:[],tests:[],bills:[],patients:[],users:[],audit:[],tokens:[],reports:[],signers:[],config:[]},S={},M={},ME=null,page='dashboard',F=null,syncing=false,syncMsg='',syncTimer=null;
+let BF={from:'',to:'',type:'',doc:'',q:'',due:false},RF={from:'',to:''},PQ='',TQ='',TC='';
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=(n,l)=>String(n).padStart(l,'0');
+const ymd=(d=new Date())=>d.getFullYear()+'-'+pad(d.getMonth()+1,2)+'-'+pad(d.getDate(),2);
+const fd=s=>{if(!s)return'';const p=s.split('-');return p[2]+'/'+p[1]+'/'+p[0]};
+const ft=ts=>{const d=new Date(ts);let h=d.getHours();const ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+pad(d.getMinutes(),2)+':'+pad(d.getSeconds(),2)+ap};
+const ftShort=ts=>{const d=new Date(ts);let h=d.getHours();const ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+pad(d.getMinutes(),2)+' '+ap};
+const inr=n=>Number(n||0).toLocaleString('en-IN',{maximumFractionDigits:2});
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const hp=p=>{let h=5381;const s='gl|'+p;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h.toString(36)};
+const num=v=>{const n=Number(v);return isFinite(n)?n:0};
+const cat=n=>/X-RAY|X-CHEST|NECK AP|^PELVIS$/i.test(n)?'X-Ray':/^USG|HEPATO BILIARY|RENAL SYSTEM|OBSTETRICE|^(WA|LA) WITH PREG|^WA$|^LA$/i.test(n)?'USG':/^ECG/i.test(n)?'ECG':/^EEG/i.test(n)?'EEG':'Pathology';
+const hasDoc=t=>t!=='LAB', hasLab=t=>t!=='OPD';
+const typeName=t=>t==='OPD'?'OPD':t==='LAB'?'Lab':'OPD + Lab';
+const typeTag=t=>`<span class="tag ${t==='OPD'?'opd':t==='LAB'?'lab':'cmb'}">${typeName(t)}</span>`;
+const ageTxt=a=>/^\d+(\.\d+)?$/.test(String(a||'').trim())?String(a).trim()+' Years':String(a||'');
+function weeksText(d){return d.weeks&&d.weeks.length?' ('+d.weeks.map(n=>WK[n]).join(' & ')+' week)':''}
+function schedText(d){return (d.dow||[]).map(i=>DN[i]).join(', ')+weeksText(d)}
+function visitsOn(d,dt=new Date()){if(d.active===false)return false;if(!(d.dow||[]).includes(dt.getDay()))return false;if(d.weeks&&d.weeks.length)return d.weeks.includes(Math.ceil(dt.getDate()/7));return true}
+function words(n){n=Math.round(n);if(n===0)return'Zero';const a=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'],b=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];const two=x=>x<20?a[x]:b[Math.floor(x/10)]+(x%10?' '+a[x%10]:'');const three=x=>(x>=100?a[Math.floor(x/100)]+' Hundred'+(x%100?' ':''):'')+(x%100?two(x%100):'');let r='';const cr=Math.floor(n/1e7),lk=Math.floor(n/1e5)%100,th=Math.floor(n/1e3)%100,h=n%1000;if(cr)r+=three(cr)+' Crore ';if(lk)r+=two(lk)+' Lakh ';if(th)r+=two(th)+' Thousand ';if(h)r+=three(h);return r.trim()}
+function csvCell(v){v=String(v==null?'':v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
+function download(name,text,mime){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:mime||'text/plain'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+function toast(m,bad){const d=document.createElement('div');d.textContent=m;if(bad)d.className='bad';$('toast').appendChild(d);setTimeout(()=>d.remove(),bad?5000:2800)}
+function modal(html,wide){closeModal();const d=document.createElement('div');d.className='modalbg';d.id='mdl';d.innerHTML=`<div class="modal${wide?' wide':''}">${html}</div>`;document.body.appendChild(d)}
+function closeModal(){const m=$('mdl');if(m)m.remove()}
+
+/* ---------- storage (IndexedDB, write-through) ---------- */
+function openDB(){return new Promise(res=>{try{const r=indexedDB.open(BRAND.db,3);r.onupgradeneeded=()=>{STORES.forEach(s=>{if(!r.result.objectStoreNames.contains(s))r.result.createObjectStore(s,{keyPath:'id'})})};r.onsuccess=()=>res(r.result);r.onerror=()=>res(null);r.onblocked=()=>res(null)}catch(e){res(null)}})}
+function idbAll(s){return new Promise(res=>{if(!idb)return res([]);try{const q=idb.transaction(s).objectStore(s).getAll();q.onsuccess=()=>res(q.result);q.onerror=()=>res([])}catch(e){res([])}})}
+function idbPut(s,o){if(!idb)return;try{idb.transaction(s,'readwrite').objectStore(s).put(o)}catch(e){}}
+function idbClear(s){return new Promise(res=>{if(!idb)return res();try{const t=idb.transaction(s,'readwrite');t.objectStore(s).clear();t.oncomplete=res;t.onerror=res}catch(e){res()}})}
+function upsert(store,o){const a=D[store];const i=a.findIndex(x=>x.id===o.id);if(i>=0)a[i]=o;else a.push(o)}
+function put(store,o){o._u=Date.now();upsert(store,o);idbPut(store,o);if(SYNCED.includes(store)){M.dirty[store+'|'+o.id]=o._u;saveMeta();schedSync()}return o}
+function saveMeta(){idbPut('meta',M)}
+function saveSettings(){idbPut('settings',S)}
+function log(action,ref,detail){put('audit',{id:uid(),ts:Date.now(),user:ME?ME.name:'-',action,ref:ref||'',detail:detail||''})}
+function nextSeq(k){M.counters[k]=(M.counters[k]||0)+1;saveMeta();return M.counters[k]}
+function defaultSettings(){return Object.assign({id:'main',clinicName:'GREEN LIFE',sub:'POLYCLINIC AND DIAGNOSTIC CENTRE',addr:'BASUDEB PARA HOSPITAL ROAD COURT MORE, CHANCHAL, MALDA, PIN-732123',recPhones:'8927071856 / 8972351715',email:'greenlifemedical2019@gmail.com',slipAddr:'Chanchal Hospital Road, Auto Stand (Court More), Chanchal',slipPhones:'7602696853 / 8327405061',paper:'A5L',dev:'1',sbUrl:'',sbKey:'',autoBackup:false,logo:'',billPrefix:'G/L',pidFmt:'P{d}-{n5}',slipNotice:'রোগীকে ডাক্তারবাবুর কাছে দেখাতে নিয়ে আসার আগে অবশ্যই উপরিলিখিত টেলিফোন নম্বরে যোগাযোগ করে আসুন।',slipFooter:'এখানে X-Ray, USG., E.C.G. এবং Blood Test, EEG অতি যত্ন সহকারে করা হয়।',tokNotice:'রিসেপশনে টোকেন নম্বর বলে টাকা জমা দিন।',repHeader:'',repFooter:'',repMachine:'',repNB:'All reference ranges are age and sex matched. Reference limits mentioned are in accordance with the literature provided along with the kit.',repBar:'Identity of the patient not verified. If there is any lack of correlation between the results and the clinical condition, please refer the patient to the respective department.',accent:'#1456a0',barColor:'#1565c0'},BRAND.set)}
+function seed(){
+ DOCTORS.forEach((d,i)=>{const o=Object.assign({id:'d'+(i+1),active:true,_u:0},d);D.doctors.push(o);idbPut('doctors',o)});
+ TESTS.forEach((t,i)=>{const o={id:'t'+(i+1),name:t.n,rate:t.r,active:true,_u:0};D.tests.push(o);idbPut('tests',o)});
+ (BRAND.users?BRAND.users.map(u=>Object.assign({active:true,_u:0},u,{pin:hp(u.pin)})):[{id:'u-admin',name:'Admin',role:'admin',pin:hp('1234'),active:true,_u:0},{id:'u-ummi',name:'UMMI',role:'opd',pin:hp('1111'),active:true,_u:0},{id:'u-lab',name:'LAB',role:'lab',pin:hp('2222'),active:true,_u:0}]).forEach(u=>{D.users.push(u);idbPut('users',u)});
+ (BRAND.signers||[]).forEach((s,i)=>{const o=Object.assign({id:'sg'+(i+1),active:true,sig:'',_u:0},s);D.signers.push(o);idbPut('signers',o)});
+ M.seeded=true;saveMeta();saveSettings();
+}
+
+/* ---------- cloud sync (Supabase REST, optional) ---------- */
+let reconciledOnce=false;
+const base=()=>(S.sbUrl||'').trim().replace(/\/+$/,'');
+const cfgOK=()=>location.protocol!=='file:'||!!base();
+const pending=()=>Object.keys(M.dirty||{}).length;
+function sbFetch(path,opt){opt=opt||{};return fetch(base()+'/api/'+path,Object.assign({},opt,{headers:Object.assign({'Content-Type':'application/json'},opt.headers||{})}))}
+function schedSync(){if(!cfgOK())return;clearTimeout(syncTimer);syncTimer=setTimeout(()=>syncNow(),2500)}
+async function syncNow(manual){
+ if(!cfgOK()){if(manual)toast('Cloud sync is not set up yet (Backup & Sync page).',true);return}
+ if(!navigator.onLine){renderStatus();if(manual)toast('Internet is off. Data is safe on this computer and will sync later.',true);return}
+ if(syncing)return;syncing=true;syncMsg='Syncing…';renderStatus();let pulled=0;const newTk=[];
+ try{
+  if(!M.autoPushed&&location.protocol!=='file:'){SYNCED.forEach(st=>D[st].forEach(o=>{M.dirty[st+'|'+o.id]=o._u||1}));M.autoPushed=true;saveMeta()}
+  if(!reconciledOnce&&location.protocol!=='file:'){reconciledOnce=true;
+   ['users','doctors','tests'].forEach(st=>D[st].forEach(o=>{if((o._u||0)>0)M.dirty[st+'|'+o.id]=o._u}));
+   try{const r0=await sbFetch('summary');if(r0.ok){const sm=await r0.json();['bills','patients','tokens','audit'].forEach(st=>{const have=(sm[st]&&sm[st].count)||0;if(D[st].length>have)D[st].forEach(o=>{M.dirty[st+'|'+o.id]=o._u||1})})}}catch(e){}
+   saveMeta()}
+  const keys=Object.keys(M.dirty);
+  for(let i=0;i<keys.length;i+=100){
+   const chunk=keys.slice(i,i+100),rows=[],sent={};
+   chunk.forEach(k=>{const [st,id]=k.split('|');const o=(D[st]||[]).find(x=>x.id===id);if(o){rows.push({store:st,id:id,data:o,updated_at:o._u||1});sent[k]=o._u}else delete M.dirty[k]});
+   if(rows.length){const r=await sbFetch('records',{method:'POST',body:JSON.stringify(rows)});if(!r.ok)throw new Error('Upload failed ('+r.status+')')}
+   Object.keys(sent).forEach(k=>{const [st,id]=k.split('|');const o=D[st].find(x=>x.id===id);if(!o||o._u===sent[k])delete M.dirty[k]});
+  }
+  for(let loop=0;loop<200;loop++){
+   const r=await sbFetch('records?since='+(M.lastPull||0)+'&limit=500');
+   if(!r.ok)throw new Error('Download failed ('+r.status+')');
+   const rows=await r.json();if(!rows.length)break;
+   rows.forEach(row=>{const st=row.store;if(!D[st])return;const loc=D[st].find(x=>x.id===row.id);const o=row.data;const ru=o._u||row.updated_at;o._u=ru;if(!loc||(loc._u||0)<ru){if(st==='tokens'&&!loc&&o.status==='unpaid'&&o.date===ymd()&&(o.createdAt||0)>Date.now()-15*60000)newTk.push(o);upsert(st,o);idbPut(st,o);pulled++}if(row.updated_at>(M.lastPull||0))M.lastPull=row.updated_at});
+   if(rows.length<500)break;
+  }
+  M.lastSync=Date.now();syncMsg='';applyShared();saveMeta();
+  if(ME&&!D.users.find(u=>u.id===ME.id&&u.active!==false)){ME=null}
+  else if(ME){ME=D.users.find(u=>u.id===ME.id)}
+  if(manual)toast(pulled?('Synced. '+pulled+' new/updated records received.'):'Synced. Everything is up to date.');
+  if(newTk.length&&ME&&can('tokens')){newTk.forEach(t=>toast('🔔 New token #'+t.no+' — '+t.name+' ('+t.doctorName+')'));beep()}
+  if(pulled)refreshBadge();
+  if(!ME)refreshLoginUsers();else if(pulled&&(page==='dashboard'||page==='tokens'))render();
+ }catch(e){syncMsg='Sync error: '+(e.message||e);if(manual)toast(syncMsg,true);const lw=$('lwait');if(lw&&!M.lastSync)lw.textContent='Cannot reach the server. Check internet and reload this page.'}
+ finally{syncing=false;saveMeta();renderStatus()}
+}
+function renderStatus(){const el=$('status');if(!el)return;let c='ok',t;const on=navigator.onLine;
+ if(!on){c='bad';t='Offline — saving on this computer'+(pending()?' ('+pending()+' waiting)':'')}
+ else if(!cfgOK()){c='warn';t='Online · works on this computer (cloud sync not set up)'}
+ else if(syncMsg&&syncMsg!=='Syncing…'){c='bad';t=syncMsg.slice(0,70)}
+ else if(syncing){c='warn';t='Syncing…'}
+ else if(pending()){c='warn';t='Online · '+pending()+' waiting to sync'}
+ else{t='Online · synced'+(M.lastSync?' '+ftShort(M.lastSync):'')}
+ el.className='chip '+c;el.innerHTML='<i></i>'+esc(t);el.title=syncMsg||''}
+
+/* ---------- backup / restore ---------- */
+function backupData(){return JSON.stringify({app:BRAND.app,v:1,ts:Date.now(),counters:M.counters,data:D})}
+function doBackup(auto){download(BRAND.file+'_Backup_'+ymd()+'_'+new Date().toTimeString().slice(0,5).replace(':','')+'.json',backupData(),'application/json');M.lastBackup=Date.now();M.lastBackupDay=ymd();saveMeta();if(!auto){toast('Backup downloaded. Keep a copy on a pen drive too.');if(page==='backup')render()}}
+function restoreFile(inp){
+ const f=inp.files[0];if(!f)return;const rd=new FileReader();
+ rd.onload=async()=>{
+  let j;try{j=JSON.parse(rd.result)}catch(e){toast('This file is not a valid backup.',true);return}
+  if(j.app!==BRAND.app||!j.data){toast('This is not a '+BRAND.name+' backup file.',true);return}
+  const mode=(document.querySelector('input[name=rmode]:checked')||{}).value||'merge';
+  const cnt=Object.keys(D).reduce((s,k)=>s+(j.data[k]||[]).length,0);
+  if(!confirm((mode==='replace'?'REPLACE all data on this computer with':'MERGE')+' the backup of '+new Date(j.ts).toLocaleString()+' ('+cnt+' records)?'))return;
+  for(const st of Object.keys(D)){
+   if(mode==='replace'){D[st]=[];await idbClear(st)}
+   (j.data[st]||[]).forEach(r=>{const loc=D[st].find(x=>x.id===r.id);if(!loc||(loc._u||0)<(r._u||0)||mode==='replace'){upsert(st,r);idbPut(st,r);M.dirty[st+'|'+r.id]=r._u||1}});
+  }
+  Object.keys(j.counters||{}).forEach(k=>{M.counters[k]=Math.max(M.counters[k]||0,j.counters[k])});
+  saveMeta();log('Restore backup',f.name,mode+' · '+cnt+' records');toast('Backup restored.');schedSync();
+  if(!D.users.find(u=>u.id===ME.id)){ME=null}else ME=D.users.find(u=>u.id===ME.id);render();
+ };rd.readAsText(f);inp.value='';
+}
+function pushAll(){SYNCED.forEach(st=>D[st].forEach(o=>{M.dirty[st+'|'+o.id]=o._u||1}));M.lastPull=0;saveMeta();syncNow(true)}
+async function testCloud(){
+ S.sbUrl=($('sb_url').value||'').trim();saveSettings();
+ const el=$('sb_res');el.textContent='Testing…';
+ try{const r=await sbFetch('ping');if(r.ok){el.innerHTML='<b style="color:var(--g)">Connected.</b> Server and database are ready.';syncNow(true)}else{el.innerHTML='<b class="due">Server error ('+r.status+').</b>'}}
+ catch(e){el.innerHTML='<b class="due">Could not reach the server.</b> Check the address and your internet.'}
+}
+
+/* ---------- logo, barcode ---------- */
+function logoHTML(){return S.logo?`<img src="${S.logo}" alt="Logo">`:`<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="29" fill="none" stroke="${S.accent||'#1456a0'}" stroke-width="3"/><circle cx="32" cy="32" r="24" fill="none" stroke="${S.accent||'#1456a0'}" stroke-width="1"/><text x="32" y="41" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="${BRAND.mono.length>2?19:26}" fill="${S.accent||'#1456a0'}">${BRAND.mono}</text><path d="M46 14v10M41 19h10" stroke="#d63a3a" stroke-width="3"/></svg>`}
+const C39={'0':'nnnwwnwnn','1':'wnnwnnnnw','2':'nnwwnnnnw','3':'wnwwnnnnn','4':'nnnwwnnnw','5':'wnnwwnnnn','6':'nnwwwnnnn','7':'nnnwnnwnw','8':'wnnwnnwnn','9':'nnwwnnwnn','A':'wnnnnwnnw','B':'nnwnnwnnw','C':'wnwnnwnnn','D':'nnnnwwnnw','E':'wnnnwwnnn','F':'nnwnwwnnn','G':'nnnnnwwnw','H':'wnnnnwwnn','I':'nnwnnwwnn','J':'nnnnwwwnn','K':'wnnnnnnww','L':'nnwnnnnww','M':'wnwnnnnwn','N':'nnnnwnnww','O':'wnnnwnnwn','P':'nnwnwnnwn','Q':'nnnnnnwww','R':'wnnnnnwwn','S':'nnwnnnwwn','T':'nnnnwnwwn','U':'wwnnnnnnw','V':'nwwnnnnnw','W':'wwwnnnnnn','X':'nwnnwnnnw','Y':'wwnnwnnnn','Z':'nwwnwnnnn','-':'nwnnnnwnw','.':'wwnnnnwnn',' ':'nwwnnnwnn','*':'nwnnwnwnn','$':'nwnwnwnnn','/':'nwnwnnnwn','+':'nwnnnwnwn','%':'nnnwnwnwn'};
+function barcode(txt){const s='*'+String(txt).toUpperCase().replace(/[^0-9A-Z\-. $\/+%]/g,'')+'*';let x=0,out='';for(const ch of s){const p=C39[ch];if(!p)continue;for(let i=0;i<9;i++){const w=p[i]==='w'?3:1;if(i%2===0)out+=`<rect x="${x}" y="0" width="${w}" height="40"/>`;x+=w}x+=1}return `<svg class="bc" viewBox="0 0 ${x} 40" preserveAspectRatio="none">${out}</svg>`}
+
+/* ---------- login / session ---------- */
+function renderLogin(){
+ const us=D.users.filter(u=>u.active!==false);
+ const defPin=D.users.some(u=>u.id==='u-admin'&&u.pin===hp('1234'));
+ const wait=location.protocol!=='file:'&&!M.lastSync;
+ $('app').innerHTML=`<div class="login"><div class="box"><div class="lg">${logoHTML()}</div><h1>${esc(BRAND.full)}</h1><p>Chanchal, Malda · Clinic Management</p>
+ <label class="f">User<select id="lu">${us.map(u=>`<option value="${u.id}">${esc(u.name)} (${ROLEN[rl(u)]})</option>`).join('')}</select></label>
+ <label class="f" style="margin-top:10px">PIN<input id="lp" type="password" inputmode="numeric" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()"></label>
+ <div class="err" id="le"></div><div class="muted" id="lwait" style="text-align:center;margin-bottom:8px">${wait?'Loading latest users from the server… please wait':''}</div><button class="btn g" id="lbtn" style="width:100%" onclick="doLogin()" ${wait?'disabled':''}>Sign in</button>
+ ${defPin?'<p style="margin-top:12px">First time: Admin PIN <b>1234</b> · Reception PIN <b>1111</b> · Lab (LAB) PIN <b>2222</b>. Change them in Users after signing in.</p>':''}
+ <p style="margin-top:14px">Management software help: <b>${HELP_PHONE}</b></p>
+ ${idb?'':'<div class="err">Browser storage is blocked. Open this file in a normal (not private) window, otherwise data will be lost on closing.</div>'}
+ </div></div>`;
+ setTimeout(()=>{const e=$('lp');if(e)e.focus()},50);
+}
+function refreshLoginUsers(){const el=$('lu');if(!el)return;const cur=el.value;el.innerHTML=D.users.filter(u=>u.active!==false).map(u=>`<option value="${u.id}">${esc(u.name)} (${ROLEN[rl(u)]})</option>`).join('');if([...el.options].some(o=>o.value===cur))el.value=cur;const lb=$('lbtn');if(lb&&M.lastSync){lb.disabled=false;const lw=$('lwait');if(lw)lw.textContent=''}}
+async function freshUsers(){
+ if(location.protocol==='file:'||!navigator.onLine||!cfgOK())return;
+ const t0=Date.now();while(syncing&&Date.now()-t0<4000)await new Promise(r=>setTimeout(r,100));
+ if(!syncing)await Promise.race([syncNow(),new Promise(r=>setTimeout(r,4000))]);
+}
+async function doLogin(){
+ if(location.protocol!=='file:'&&!M.lastSync)return;
+ const uid0=$('lu').value,pin=$('lp').value.trim(),btn=$('lbtn');
+ if(btn){btn.disabled=true;btn.textContent='Checking…'}
+ await freshUsers();
+ const b2=$('lbtn');if(b2){b2.disabled=false;b2.textContent='Sign in'}
+ const u=D.users.find(x=>x.id===uid0&&x.active!==false);
+ if(!u||u.pin!==hp(pin)){const le=$('le');if(le)le.textContent='Wrong PIN. Try again.';const lp=$('lp');if(lp){lp.value='';lp.focus()}return}
+ ME=u;try{sessionStorage.setItem('glu',u.id)}catch(e){}
+ page='dashboard';F=null;log('Login',u.name,'');
+ if(rl(u)==='admin'&&S.autoBackup&&M.lastBackupDay!==ymd())doBackup(true);
+ render();
+}
+function logout(){log('Logout',ME.name,'');ME=null;F=null;try{sessionStorage.removeItem('glu')}catch(e){}render()}
+const NAV={
+ admin:[['dashboard','Dashboard'],['billing','New Bill'],['tokens','Token Bookings'],['bills','Bills'],['patients','Patients'],['doctors','Doctors'],['tests','Tests & Rates'],['reports','Reports'],['users','Users'],['qr','QR Poster'],['settings','Settings'],['backup','Backup & Sync'],['audit','Audit Log'],['help','Help']],
+ opd:[['dashboard','Dashboard'],['billing','New OPD Slip'],['tokens','Token Bookings'],['bills','Bills'],['patients','Patients'],['qr','QR Poster'],['help','Help']],
+ lab:[['dashboard','Dashboard'],['billing','New Lab Bill'],['bills','Bills'],['patients','Patients'],['help','Help']],
+ doctor:[['dashboard','Dashboard'],['bills','My Bills'],['patients','Patients'],['help','Help']]
+};
+const tkCount=()=>D.tokens.filter(t=>t.status==='unpaid'&&t.date===ymd()).length;
+function navHTML(items){return items.map(x=>`<button class="${page===x[0]||(page==='repedit'&&x[0]==='labreports')?'on':''}" onclick="nav('${x[0]}')">${x[1]}${x[0]==='tokens'&&tkCount()?` <b id="tkb" style="background:#e0a100;color:#000;border-radius:99px;padding:0 7px;margin-left:4px">${tkCount()}</b>`:''}</button>`).join('')}
+function refreshBadge(){const n=$('navbox');if(n&&ME)n.innerHTML=navHTML(navItems())}
+const rl=u=>u&&u.role==='reception'?'opd':(u?u.role:'');
+const myRole=()=>rl(ME);
+const ROLEN={admin:'Admin / Owner',opd:'OPD / Reception',lab:'Lab / Test',doctor:'Doctor'};
+const isAdmin=()=>!!ME&&myRole()==='admin';
+function nav(p){page=p;if(p==='billing'&&!F)F=newForm(defType());if(p!=='billing')F=null;render();window.scrollTo(0,0)}
+function startBill(type,pid){if(!allowedTypes().includes(type))type=defType();const p=pid?D.patients.find(x=>x.id===pid):null;F=newForm(type,p);page='billing';closeModal();render();window.scrollTo(0,0)}
+const views={};
+function render(){
+ if(!ME){renderLogin();return}
+ const items=navItems();if(!items.some(x=>x[0]===page)&&!(page==='repedit'&&can('report')))page='dashboard';
+ const title=(items.find(x=>x[0]===page)||[])[1]||(page==='repedit'?'Lab Report':'');
+ $('app').innerHTML=`<div class="shell"><aside class="side"><div class="brand"><div class="lg">${logoHTML()}</div><div><b>${esc(BRAND.name)}</b><small>${esc(BRAND.tag)}</small></div></div>
+ <nav class="nav" id="navbox">${navHTML(items)}</nav>
+ <div class="help">Management software help<br><a href="tel:${HELP_PHONE}">${HELP_PHONE}</a></div></aside>
+ <main class="main"><header class="top"><h1>${esc(title)}</h1><div class="r"><span id="status" class="chip"></span><span class="chip" title="Signed in">${esc(ME.name)} · ${ROLEN[myRole()]}</span><button class="btn l s" onclick="logout()">Logout</button></div></header>
+ <div class="view" id="view"></div>
+ <div class="foot">Management software help: <a href="tel:${HELP_PHONE}">${HELP_PHONE}</a> · Today ${fd(ymd())}</div></main></div>`;
+ renderStatus();views[page]();
+}
+
+/* ---------- dashboard ---------- */
+const myBills=()=>{const a=D.bills.filter(b=>!b._del);if(!ME)return a;const r=myRole();if(r==='doctor')return a.filter(b=>b.doctorId===ME.doctorId);if(r==='admin')return a;
+ const dp=can('opd')||can('combined')||can('tokens'),lp=can('lab')||can('combined')||can('report');
+ return a.filter(b=>(b.type==='OPD'&&dp)||(b.type==='LAB'&&lp)||(b.type==='COMBINED'&&(dp||lp)))};
+function collection(from,to){let s=0;D.bills.forEach(b=>{if(b._del)return;(b.pays||[]).forEach(p=>{if(p.d>=from&&p.d<=to)s+=p.a})});return s}
+views.dashboard=function(){
+ const td=ymd(),B=myBills().filter(b=>b.billDate===td);
+ const pts=new Set(B.map(b=>b.pid)).size,opd=B.filter(b=>b.doctorId&&b.type!=='LAB'),lab=B.filter(b=>b.type!=='OPD'&&b.items.length);
+ const newP=D.patients.filter(p=>p.created===td).length,opdInc=opd.reduce((s,b)=>s+b.fee,0),labInc=lab.reduce((s,b)=>s+b.items.reduce((x,i)=>x+num(i.r),0),0);
+ const dueT=B.reduce((s,b)=>s+b.due,0);
+ let ban='';
+ if(isAdmin()){
+  if(D.users.some(u=>u.pin===hp('1234')||u.pin===hp('1111')||u.pin===hp('2222')))ban+=`<div class="banner bad"><span>A default PIN (1234 / 1111 / 2222) is still in use. Change it for safety.</span><button class="btn s" onclick="nav('users')">Open Users</button></div>`;
+  if(!M.lastBackup||Date.now()-M.lastBackup>7*864e5)ban+=`<div class="banner"><span>${M.lastBackup?'Last backup was '+Math.floor((Date.now()-M.lastBackup)/864e5)+' days ago.':'No backup taken yet.'} Take a weekly backup.</span><button class="btn s o" onclick="doBackup()">Download backup now</button></div>`;
+ }
+ if(!idb)ban+=`<div class="banner bad">Browser storage is not available — data will not be saved. Use a normal browser window.</div>`;
+ const vis=D.doctors.filter(d=>visitsOn(d));
+ let perDoc='';
+ if(isAdmin()){
+  const rows=D.doctors.map(d=>{const x=opd.filter(b=>b.doctorId===d.id);return{d,n:new Set(x.map(b=>b.pid)).size,fee:x.reduce((s,b)=>s+b.fee,0)}}).filter(r=>r.n);
+  perDoc=`<div class="card"><h2>Doctor-wise today</h2>${rows.length?`<div class="tw"><table><tr><th>Doctor</th><th class="n">Patients</th><th class="n">OPD fees</th></tr>${rows.map(r=>`<tr><td>${esc(r.d.name)}</td><td class="n">${r.n}</td><td class="n">₹ ${inr(r.fee)}</td></tr>`).join('')}</table></div>`:'<div class="em">No OPD patients yet today.</div>'}</div>`;
+ }
+ const recent=B.sort((a,b)=>b.ts-a.ts).slice(0,8);
+ $('view').innerHTML=ban+`
+ <div class="stats"><div class="stat s1"><b>${pts}</b><span>Total patients today</span></div><div class="stat s2"><b>${opd.length}</b><span>OPD bills today</span></div><div class="stat s3"><b>${lab.length}</b><span>Lab / pathology bills today</span></div>${can('tokens')?`<div class="stat" style="background:#7b3fa0;cursor:pointer" onclick="nav('tokens')"><b>${tkCount()}</b><span>Unpaid tokens waiting</span></div>`:''}
+ ${isAdmin()?`<div class="stat s4"><b>₹ ${inr(collection(td,td))}</b><span>Total collection today</span></div><div class="stat s5"><b>${newP}</b><span>New patients today</span></div><div class="stat s6"><b>${opd.length}</b><span>New appointments today</span></div>`:`<div class="stat s5"><b>${newP}</b><span>New patients today</span></div>`}</div>
+ ${isAdmin()?`<div class="stats"><div class="stat" style="background:#2f6f55"><b>₹ ${inr(opdInc)}</b><span>OPD fees billed today</span></div><div class="stat" style="background:#3d5fa8"><b>₹ ${inr(labInc)}</b><span>Lab income billed today</span></div><div class="stat" style="background:#9a3b32"><b>₹ ${inr(dueT)}</b><span>Due created today</span></div></div>`:''}
+ ${allowedTypes().length?`<div class="acts">${allowedTypes().includes('OPD')?'<button class="btn g" onclick="startBill(\'OPD\')">OPD Slip</button>':''}${allowedTypes().includes('LAB')?'<button class="btn" onclick="startBill(\'LAB\')">Lab Bill</button>':''}${allowedTypes().includes('COMBINED')?'<button class="btn o" onclick="startBill(\'COMBINED\')">OPD + Lab Bill</button>':''}${can('tokens')?`<button class="btn" style="background:#7b3fa0" onclick="nav('tokens')">Token Bookings${tkCount()?' ('+tkCount()+')':''}</button>`:''}<button class="btn l" onclick="nav('patients')">Find Patient</button></div>`:''}
+ <div class="g3"><div>${perDoc}<div class="card"><h2>Recent bills today</h2>${recent.length?`<div class="tw"><table><tr><th>Time</th><th>Patient</th><th>Bill No.</th><th>Type</th><th class="n">Amount</th></tr>${recent.map(b=>`<tr><td>${ftShort(b.ts)}</td><td>${esc(b.title)} ${esc(b.name)}</td><td>${esc(b.no)}</td><td>${typeTag(b.type)}</td><td class="n">₹ ${inr(b.total)}</td></tr>`).join('')}</table></div>`:'<div class="em">No bills yet today. Start with “New Bill”.</div>'}</div></div>
+ <div class="card"><h2>Visiting doctors today (${DN[new Date().getDay()]})</h2>${vis.length?vis.map(d=>`<div style="padding:6px 0;border-bottom:1px solid var(--ln)"><b>${esc(d.name)}</b><div class="muted">${esc(d.spec)}${d.timing?' · '+esc(d.timing):''}</div></div>`).join(''):'<div class="em">No visiting doctor scheduled today.</div>'}${isAdmin()?`<div style="margin-top:10px"><button class="btn l s" onclick="nav('doctors')">All doctors</button></div>`:''}</div></div>`;
+};
+
+/* ---------- billing ---------- */
+function newForm(type,p){p=p||{};return{type,edit:null,pid:p.id||null,title:p.title||'Mr.',name:p.name||'',age:p.age||'',sex:p.sex||'Male',weight:p.weight||'',phone:p.phone||'',guardian:p.guardian||'',doc:'',fee:0,apptDate:ymd(),apptTime:'',bookingNo:'',items:[],disc:0,paid:'',paidT:false,mode:'Cash',tq:'',tcat:''}}
+function tot(f){const it=f.items.reduce((s,i)=>s+num(i.r),0),fee=f.type==='LAB'?0:num(f.fee),sub=fee+it,disc=Math.min(Math.max(num(f.disc),0),sub);return{fee,it,sub,disc,net:sub-disc}}
+function ftype(t){F.type=t;if(!hasLab(t))F.items=[];if(t==='LAB'&&F.doc===''){}F.tq='';drawBilling()}
+function fset(k,v){
+ if(['fee','disc'].includes(k))F[k]=v===''?'':num(v);
+ else if(k==='paid'){F.paid=v===''?'':num(v);F.paidT=true}
+ else F[k]=v;
+ if(k==='name'||k==='phone')drawSug();
+ calc();
+}
+function pickDoc(id){F.doc=id;const d=D.doctors.find(x=>x.id===id);F.fee=d&&F.type!=='LAB'?d.fee:0;if($('f_fee'))$('f_fee').value=F.fee;calc()}
+function calc(){const T=tot(F);const paid=F.paidT?num(F.paid):T.net;
+ const set=(i,v)=>{const e=$(i);if(e)e.textContent=v};
+ set('t_fee','₹ '+inr(T.fee));set('t_tests','₹ '+inr(T.it));set('t_net','₹ '+inr(T.net));set('t_due','₹ '+inr(Math.max(0,T.net-paid)));
+ const p=$('f_paid');if(p&&!F.paidT)p.value=T.net;
+ const dl=$('t_dueline');if(dl)dl.className=T.net-paid>0?'due':'';
+}
+function drawSug(){
+ const box=$('sug');if(!box)return;const q=(F.name||'').trim().toLowerCase(),ph=(F.phone||'').trim();
+ if(F.pid||(q.length<2&&ph.length<4)){box.style.display='none';return}
+ const r=D.patients.filter(p=>(q.length>=2&&p.name.toLowerCase().includes(q))||(ph.length>=4&&(p.phone||'').includes(ph))).slice(0,8);
+ if(!r.length){box.style.display='none';return}
+ box.style.display='block';box.innerHTML='<div class="muted" style="cursor:default">Existing patients — tap to use</div>'+r.map(p=>`<div onclick="usePatient('${p.id}')"><span><b>${esc(p.title||'')} ${esc(p.name)}</b> · ${esc(ageTxt(p.age))} ${esc(p.sex||'')}</span><span class="muted">${esc(p.phone||'')} · ${esc(p.pno)}</span></div>`).join('');
+}
+function usePatient(id){const p=D.patients.find(x=>x.id===id);if(!p)return;Object.assign(F,{pid:p.id,title:p.title||'Mr.',name:p.name,age:p.age||'',sex:p.sex||'Male',weight:p.weight||'',phone:p.phone||'',guardian:p.guardian||''});drawBilling()}
+function newPatientLink(){F.pid=null;drawBilling()}
+function pickCat(c){F.tcat=F.tcat===c?'':c;document.querySelectorAll('#t_pills button').forEach(b=>b.classList.toggle('on',b.dataset.c===F.tcat));drawRes()}
+function drawRes(){
+ const box=$('t_res');if(!box)return;const q=(F.tq||'').trim().toLowerCase();
+ if(!q&&!F.tcat){box.style.display='none';box.innerHTML='';F.first=null;return}
+ const r=D.tests.filter(t=>t.active!==false&&(!F.tcat||cat(t.name)===F.tcat)&&tmatch(t.name,q)).sort((a,b)=>{const x=nz(a.name).startsWith(nz(q))?0:1,y=nz(b.name).startsWith(nz(q))?0:1;return x-y||a.name.localeCompare(b.name)}).slice(0,40);
+ F.first=r[0]?r[0].id:null;box.style.display='block';
+ box.innerHTML=r.length?r.map(t=>`<div onclick="addTest('${t.id}')"><span>${esc(t.name)} <span class="muted">· ${cat(t.name)}</span></span><b>₹ ${inr(t.rate)}</b></div>`).join(''):'<div class="em" style="cursor:default">No test found</div>';
+}
+function tkey(e){if(e.key==='Enter'){e.preventDefault();if(F.first)addTest(F.first)}}
+function addTest(id){const t=D.tests.find(x=>x.id===id);if(!t)return;if(F.items.some(i=>i.tid===id)){toast(t.name+' is already added.',true);return}
+ F.items.push({tid:id,n:t.name,r:t.rate,del:ymd()});F.tq='';const s=$('t_q');if(s){s.value='';s.focus()}drawRes();drawItems();calc()}
+function rmTest(i){F.items.splice(i,1);drawItems();calc()}
+function itemSet(i,k,v){F.items[i][k]=k==='r'?num(v):v;calc()}
+function drawItems(){const el=$('t_items');if(!el)return;
+ el.innerHTML=F.items.length?`<div class="tw"><table><tr><th>#</th><th>Test name</th><th class="n">Rate (₹)</th><th>Delivery date</th><th></th></tr>${F.items.map((it,i)=>`<tr><td>${i+1}</td><td>${esc(it.n)}</td><td class="n">${isAdmin()?`<input type="number" min="0" value="${it.r}" style="width:90px;text-align:right" oninput="itemSet(${i},'r',this.value)">`:inr(it.r)}</td><td><input type="date" value="${it.del}" style="width:150px" onchange="itemSet(${i},'del',this.value)"></td><td><button class="btn r s" onclick="rmTest(${i})">Remove</button></td></tr>`).join('')}</table></div>`:'<div class="em">No tests added yet. Type a test name above.</div>';
+}
+function drawBilling(){
+ const t=F.type,docs=D.doctors.filter(d=>d.active!==false||d.id===F.doc);
+ const dopt=docs.map(d=>`<option value="${d.id}"${F.doc===d.id?' selected':''}>${visitsOn(d)?'● ':''}${esc(d.name)} — ${esc(d.spec)}</option>`).join('');
+ const T=tot(F),paid=F.paidT?num(F.paid):T.net;
+ $('view').innerHTML=`
+ <div class="tabs">${[['OPD','OPD Slip only'],['LAB','Lab Bill only'],['COMBINED','Combined (OPD + Lab)']].filter(x=>allowedTypes().length>1&&allowedTypes().includes(x[0])).map(x=>`<button class="${t===x[0]?'on':''}" onclick="ftype('${x[0]}')">${x[1]}</button>`).join('')}</div>
+ ${F.edit?`<div class="banner"><span>Editing bill <b>${esc(F.editNo)}</b>. Changes are recorded in the Audit Log.</span><button class="btn l s" onclick="nav('bills')">Cancel edit</button></div>`:''}
+ <div class="card"><h2>Patient</h2>
+  <div class="g2">
+   <label class="f">Patient name *<span class="row" style="flex-wrap:nowrap;gap:6px"><select style="width:84px" onchange="fset('title',this.value)">${['Mr.','Mrs.','Miss','Master','Baby','Smt.','Md.'].map(x=>`<option${F.title===x?' selected':''}>${x}</option>`).join('')}</select><input id="f_name" value="${esc(F.name)}" oninput="fset('name',this.value)" autocomplete="off"></span></label>
+   <label class="f">Age<input value="${esc(F.age)}" oninput="fset('age',this.value)" placeholder="e.g. 45"></label>
+   <label class="f">Sex<select onchange="fset('sex',this.value)">${['Male','Female','Other'].map(x=>`<option${F.sex===x?' selected':''}>${x}</option>`).join('')}</select></label>
+   <label class="f">Weight (kg)<input value="${esc(F.weight)}" oninput="fset('weight',this.value)"></label>
+   <label class="f">Contact no.<input value="${esc(F.phone)}" inputmode="tel" oninput="fset('phone',this.value)" autocomplete="off"></label>
+   <label class="f">Of (father / husband / guardian)<input value="${esc(F.guardian)}" oninput="fset('guardian',this.value)"></label>
+  </div>
+  <div class="res" id="sug"></div>
+  ${F.pid?`<div class="muted" style="margin-top:8px">Existing patient <b>${esc((D.patients.find(p=>p.id===F.pid)||{}).pno||'')}</b> · <a href="#" onclick="newPatientLink();return false">this is a new patient</a></div>`:`<div class="muted" style="margin-top:8px">New patient — ID is created automatically when you save.</div>`}
+ </div>
+ <div class="card"><h2>${t==='LAB'?'Referred by (optional)':'Doctor &amp; appointment'}</h2>
+  <div class="g2">
+   <label class="f">${t==='LAB'?'Doctor':'Doctor *'}<select onchange="pickDoc(this.value)"><option value="">${t==='LAB'?'SELF':'— Select doctor —'}</option>${dopt}</select></label>
+   ${t!=='LAB'?`<label class="f">OPD fee (₹)<input id="f_fee" type="number" min="0" value="${F.fee}" ${isAdmin()?'':'readonly'} oninput="fset('fee',this.value)"></label>
+   <label class="f">Appointment date<input type="date" value="${F.apptDate}" onchange="fset('apptDate',this.value)"></label>
+   <label class="f">Time (approx.)<input value="${esc(F.apptTime)}" placeholder="e.g. 11:30 AM" oninput="fset('apptTime',this.value)"></label>
+   <label class="f">Booking no. (optional)<input value="${esc(F.bookingNo)}" oninput="fset('bookingNo',this.value)"></label>`:''}
+  </div><div class="muted" style="margin-top:6px">● = visiting today</div>
+ </div>
+ ${hasLab(t)?`<div class="card"><h2>Tests</h2>
+  <input id="t_q" placeholder="Search test name, e.g. CBC, widal, USG, X-ray chest…" value="${esc(F.tq)}" oninput="F.tq=this.value;drawRes()" onkeydown="tkey(event)" autocomplete="off">
+  <div class="pills" id="t_pills">${['Pathology','X-Ray','USG','ECG'].map(c=>`<button data-c="${c}" class="${F.tcat===c?'on':''}" onclick="pickCat('${c}')">${c}</button>`).join('')}</div>
+  <div class="res" id="t_res"></div><div id="t_items" style="margin-top:10px"></div></div>`:''}
+ <div class="card"><h2>Payment</h2>
+  <div class="g3"><div class="g2">
+   <label class="f">Discount (₹)<input id="f_disc" type="number" min="0" value="${F.disc||''}" oninput="fset('disc',this.value)"></label>
+   <label class="f">Paid amount (₹)<input id="f_paid" type="number" min="0" value="${F.paidT?F.paid:T.net}" oninput="fset('paid',this.value)"></label>
+   <label class="f">Payment mode<select onchange="fset('mode',this.value)">${['Cash','UPI / QR','Card'].map(x=>`<option${F.mode===x?' selected':''}>${x}</option>`).join('')}</select></label></div>
+   <div class="tot"><span>OPD fee</span><b id="t_fee"></b><span>Tests</span><b id="t_tests"></b><span>Net amount</span><b class="big" id="t_net"></b><span id="t_dueline" class="${T.net-paid>0?'due':''}">Due</span><b id="t_due"></b></div></div>
+  <div class="mfoot" style="justify-content:flex-start"><button class="btn g" onclick="saveBill(true)">Save &amp; Print</button><button class="btn" onclick="saveBill(false)">Save only</button><button class="btn" style="background:#1da851" onclick="saveBill('wa')">Save &amp; WhatsApp</button><button class="btn l" onclick="F=newForm(F.type);drawBilling()">Clear form</button></div>
+ </div>`;
+ drawItems();calc();drawRes();
+ setTimeout(()=>{const e=$('f_name');if(e&&!F.name)e.focus()},30);
+}
+views.billing=function(){if(!F)F=newForm(defType());drawBilling()};
+function saveBill(print){
+ const t=F.type;
+ if(!allowedTypes().includes(t))return toast('You cannot make this type of bill.',true);
+ if(!F.name.trim())return toast('Enter the patient name.',true);
+ if(t!=='LAB'&&!F.doc)return toast('Select the doctor.',true);
+ if(hasLab(t)&&!F.items.length)return toast('Add at least one test.',true);
+ const T=tot(F),paid=F.paidT?num(F.paid):T.net;
+ if(paid<0||paid>T.net)return toast('Paid amount cannot be more than the net amount.',true);
+ if(T.net<0)return toast('Total cannot be negative.',true);
+ const dr=D.doctors.find(d=>d.id===F.doc),today=ymd();
+ const pf={title:F.title,name:F.name.trim(),age:String(F.age).trim(),sex:F.sex,weight:String(F.weight).trim(),phone:F.phone.trim(),guardian:F.guardian.trim()};
+ let p=F.pid?D.patients.find(x=>x.id===F.pid):null,newPt=false;
+ if(p)p=Object.assign({},p,pf);else{p=Object.assign({id:uid(),pno:fmtPid(nextSeq('pat')),created:today},pf);newPt=true}
+ put('patients',p);
+ const snap={pid:p.id,pno:p.pno,title:pf.title,name:pf.name,age:pf.age,sex:pf.sex,weight:pf.weight,phone:pf.phone,guardian:pf.guardian,doctorId:dr?dr.id:'',doctorName:dr?dr.name:'SELF',doctorDeg:dr?dr.deg:'',doctorSpec:dr?dr.spec:'',apptDate:t==='LAB'?'':F.apptDate,apptTime:t==='LAB'?'':F.apptTime,items:F.items.map(i=>({tid:i.tid,n:i.n,r:num(i.r),del:i.del})),fee:T.fee,disc:T.disc,total:T.net,mode:F.mode,type:t};
+ let b;
+ if(F.edit){
+  const old=D.bills.find(x=>x.id===F.edit);if(!old)return toast('Original bill not found.',true);
+  b=Object.assign({},old,snap);b.bookingNo=F.bookingNo||old.bookingNo;
+  const oldPaid=old.paid;b.pays=(old.pays||[]).slice();if(paid!==oldPaid)b.pays.push({d:today,a:paid-oldPaid,adj:1});
+  b.paid=paid;b.due=T.net-paid;
+  log('Edit bill',b.no,`total ${inr(old.total)}→${inr(T.net)}, paid ${inr(oldPaid)}→${inr(paid)}${old.name!==b.name?', name changed':''}`);
+ }else{
+  const no=`${S.billPrefix}-${S.dev}-${t==='OPD'?'OPD':t==='LAB'?'PT':'CB'}-${nextSeq('bill-'+t)}`;
+  b=Object.assign({id:uid(),no,bookingNo:F.bookingNo||no,billDate:today,ts:Date.now(),createdBy:ME.name,newPt,pays:paid>0?[{d:today,a:paid}]:[],paid,due:T.net-paid},snap);
+  log('Create bill',no,`${typeName(t)} · ₹${inr(T.net)}${newPt?' · new patient':''}`);
+ }
+ put('bills',b);
+ const fromTk=!!F.tokenId;
+ if(fromTk){const tk=D.tokens.find(x=>x.id===F.tokenId);if(tk&&tk.status==='unpaid'){put('tokens',Object.assign({},tk,{status:'billed',billNo:b.no,billId:b.id,billedBy:ME.name}));log('Token billed','Token '+tk.no,b.no)}}
+ toast('Saved. Bill no. '+b.no);
+ F=newForm(t);if(fromTk){page='tokens';render()}else if(page==='billing')drawBilling();
+ if(print==='wa')waBill(b.id);else if(print)printBill(b,t==='OPD'?'slip':'receipt');
+}
+
+/* ---------- bills list ---------- */
+function resetBF(){BF={from:ymd(),to:ymd(),type:'',doc:'',q:'',due:false}}
+views.bills=function(){
+ if(!BF.from)resetBF();
+ $('view').innerHTML=`<div class="card"><div class="row">
+ <label class="f">From<input type="date" value="${BF.from}" onchange="BF.from=this.value;drawBills()"></label>
+ <label class="f">To<input type="date" value="${BF.to}" onchange="BF.to=this.value;drawBills()"></label>
+ <label class="f">Type<select onchange="BF.type=this.value;drawBills()"><option value="">All</option><option value="OPD"${BF.type==='OPD'?' selected':''}>OPD</option><option value="LAB"${BF.type==='LAB'?' selected':''}>Lab</option><option value="COMBINED"${BF.type==='COMBINED'?' selected':''}>OPD + Lab</option></select></label>
+ ${myRole()!=='doctor'?`<label class="f">Doctor<select onchange="BF.doc=this.value;drawBills()"><option value="">All</option>${D.doctors.map(d=>`<option value="${d.id}"${BF.doc===d.id?' selected':''}>${esc(d.name)}</option>`).join('')}</select></label>`:''}
+ <label class="f" style="flex:1;min-width:180px">Search<input value="${esc(BF.q)}" placeholder="Name, phone, bill no." oninput="BF.q=this.value;drawBills()"></label>
+ <label class="f"><span><input type="checkbox" ${BF.due?'checked':''} onchange="BF.due=this.checked;drawBills()">Only with due</span></label>
+ <button class="btn l s" onclick="resetBF();views.bills()">Today</button><button class="btn l s" onclick="BF.from='2000-01-01';BF.to='2999-12-31';views.bills()">All dates</button></div></div>
+ <div class="card"><div id="btable"></div></div>`;
+ drawBills();
+};
+function drawBills(){
+ const q=BF.q.trim().toLowerCase();
+ const a=myBills().filter(b=>b.billDate>=BF.from&&b.billDate<=BF.to&&(!BF.type||b.type===BF.type)&&(!BF.doc||b.doctorId===BF.doc)&&(!BF.due||b.due>0)&&(!q||(b.name+' '+(b.phone||'')+' '+b.no+' '+b.pno).toLowerCase().includes(q))).sort((x,y)=>y.ts-x.ts);
+ const el=$('btable');if(!el)return;
+ if(!a.length){el.innerHTML='<div class="em">No bills found for these filters.</div>';return}
+ const sum=a.reduce((s,b)=>({t:s.t+b.total,p:s.p+b.paid,d:s.d+b.due}),{t:0,p:0,d:0});
+ el.innerHTML=`<div class="muted" style="margin-bottom:6px">${a.length} bills${a.length>400?' (showing latest 400)':''} · Total ₹ ${inr(sum.t)} · Paid ₹ ${inr(sum.p)} · Due ₹ ${inr(sum.d)}</div><div class="tw"><table><tr><th>Bill No.</th><th>Date / time</th><th>Patient</th><th>Doctor</th><th>Type</th><th class="n">Total</th><th class="n">Paid</th><th class="n">Due</th><th></th></tr>
+ ${a.slice(0,400).map(b=>`<tr><td>${esc(b.no)}</td><td>${fd(b.billDate)}<br><span class="muted">${ftShort(b.ts)}</span></td><td>${esc(b.title)} ${esc(b.name)}<br><span class="muted">${esc(b.phone||'')}</span></td><td>${esc(b.doctorName)}</td><td>${typeTag(b.type)}</td><td class="n">${inr(b.total)}</td><td class="n">${inr(b.paid)}</td><td class="n ${b.due>0?'due':''}">${inr(b.due)}</td>
+ <td style="white-space:nowrap"><button class="btn s" onclick="viewBill('${b.id}')">View / Print</button>${b.due>0&&myRole()!=='doctor'?` <button class="btn o s" onclick="payDue('${b.id}')">Receive due</button>`:''}${isAdmin()?` <button class="btn l s" onclick="editBill('${b.id}')">Edit</button> <button class="btn r s" onclick="delBill('${b.id}')">Delete</button>`:''}</td></tr>`).join('')}</table></div>`;
+}
+function viewBill(id){const b=D.bills.find(x=>x.id===id);if(!b)return;
+ modal(`<h2>Bill ${esc(b.no)}</h2><div style="border:1px solid var(--ln);padding:10px;border-radius:6px;overflow:auto">${receiptHTML(b)}</div>
+ <div class="mfoot"><button class="btn l" onclick="closeModal()">Close</button>${b.doctorId?`<button class="btn" onclick="printBill(D.bills.find(x=>x.id==='${b.id}'),'slip')">Print appointment slip</button>`:''}<button class="btn" style="background:#1da851" onclick="waBill('${b.id}')">WhatsApp Slip</button><button class="btn g" onclick="printBill(D.bills.find(x=>x.id==='${b.id}'),'receipt')">Print receipt</button></div>`,true);
+}
+function payDue(id){const b=D.bills.find(x=>x.id===id);if(!b)return;const v=prompt('Bill '+b.no+' — due ₹'+inr(b.due)+'\nAmount received now (₹):',b.due);if(v===null)return;const a=num(v);if(a<=0||a>b.due)return toast('Enter an amount between 1 and '+inr(b.due),true);
+ const n=Object.assign({},b);n.pays=(b.pays||[]).concat([{d:ymd(),a}]);n.paid=b.paid+a;n.due=b.due-a;put('bills',n);log('Due received',b.no,'₹'+inr(a));toast('₹ '+inr(a)+' received.');
+ printBill(n,'receipt');if(page==='bills')drawBills();else render()}
+function editBill(id){const b=D.bills.find(x=>x.id===id);if(!b)return;
+ F=Object.assign(newForm(b.type),{edit:b.id,editNo:b.no,pid:b.pid,title:b.title,name:b.name,age:b.age,sex:b.sex,weight:b.weight,phone:b.phone,guardian:b.guardian,doc:b.doctorId,fee:b.fee,apptDate:b.apptDate||ymd(),apptTime:b.apptTime||'',bookingNo:b.bookingNo,items:b.items.map(i=>Object.assign({},i)),disc:b.disc,paid:b.paid,paidT:true,mode:b.mode||'Cash'});
+ page='billing';render();window.scrollTo(0,0)}
+function delBill(id){const b=D.bills.find(x=>x.id===id);if(!b)return;const why=prompt('Delete bill '+b.no+' ('+b.name+', ₹'+inr(b.total)+')?\nType the reason (required):');if(!why||!why.trim())return;
+ const n=Object.assign({},b,{_del:true,delBy:ME.name,delWhy:why.trim()});put('bills',n);log('Delete bill',b.no,why.trim()+' · ₹'+inr(b.total));toast('Bill deleted (kept in audit log).');drawBills()}
+
+/* ---------- patients ---------- */
+views.patients=function(){
+ $('view').innerHTML=`<div class="card"><div class="row"><label class="f" style="flex:1;min-width:220px">Search patient<input value="${esc(PQ)}" placeholder="Name, phone or patient ID" oninput="PQ=this.value;drawPatients()"></label></div></div><div class="card"><div id="ptable"></div></div>`;drawPatients();
+};
+function drawPatients(){
+ const q=PQ.trim().toLowerCase(),vis={},last={};
+ myBills().forEach(b=>{vis[b.pid]=(vis[b.pid]||0)+1;if(!last[b.pid]||b.billDate>last[b.pid])last[b.pid]=b.billDate});
+ let a=D.patients.filter(p=>(myRole()!=='doctor'||vis[p.id])&&(!q||(p.name+' '+(p.phone||'')+' '+p.pno).toLowerCase().includes(q)));
+ a.sort((x,y)=>(last[y.id]||'').localeCompare(last[x.id]||'')||y.created.localeCompare(x.created));
+ const el=$('ptable');if(!el)return;
+ el.innerHTML=a.length?`<div class="muted" style="margin-bottom:6px">${a.length} patients${a.length>200?' (showing 200 — search to narrow)':''}</div><div class="tw"><table><tr><th>Patient ID</th><th>Name</th><th>Age / Sex</th><th>Contact</th><th class="n">Visits</th><th>Last visit</th><th></th></tr>${a.slice(0,200).map(p=>`<tr><td>${esc(p.pno)}</td><td>${esc(p.title||'')} ${esc(p.name)}<br><span class="muted">${esc(p.guardian?'of '+p.guardian:'')}</span></td><td>${esc(ageTxt(p.age))} ${esc(p.sex||'')}</td><td>${esc(p.phone||'')}</td><td class="n">${vis[p.id]||0}</td><td>${fd(last[p.id]||'')}</td><td style="white-space:nowrap"><button class="btn l s" onclick="patHistory('${p.id}')">History</button>${billBtns(p.id)}</td></tr>`).join('')}</table></div>`:'<div class="em">No patients found.</div>';
+}
+function patHistory(id){const p=D.patients.find(x=>x.id===id);if(!p)return;const a=myBills().filter(b=>b.pid===id).sort((x,y)=>y.ts-x.ts);
+ modal(`<h2>${esc(p.title||'')} ${esc(p.name)} <span class="muted" style="font-size:13px">${esc(p.pno)}</span></h2>${a.length?`<div class="tw"><table><tr><th>Date</th><th>Bill No.</th><th>Doctor</th><th>Type</th><th>Tests</th><th class="n">Total</th></tr>${a.map(b=>`<tr><td>${fd(b.billDate)}</td><td>${esc(b.no)}</td><td>${esc(b.doctorName)}</td><td>${typeTag(b.type)}</td><td>${esc(b.items.map(i=>i.n).join(', '))}</td><td class="n">${inr(b.total)}</td></tr>`).join('')}</table></div>`:'<div class="em">No bills yet.</div>'}<div class="mfoot"><button class="btn l" onclick="closeModal()">Close</button></div>`,true)}
+
+/* ---------- doctors (admin) ---------- */
+views.doctors=function(){
+ const a=D.doctors.slice().sort((x,y)=>(x._o||0)-(y._o||0)||x.id.localeCompare(y.id,undefined,{numeric:true}));
+ $('view').innerHTML=`<div class="card"><div class="row" style="justify-content:space-between"><div class="muted">${a.length} doctors · changes apply to all new bills (old bills keep the old name/fee).</div><button class="btn g" onclick="docForm()">+ Add doctor</button></div></div>
+ <div class="card tw"><table><tr><th>Doctor</th><th>Degree / specialty</th><th>Days</th><th>Timing</th><th class="n">Fee</th><th>Status</th><th></th></tr>${a.map(d=>`<tr class="${d.active===false?'del':''}"><td><b>${esc(d.name)}</b></td><td>${esc(d.deg)}<br><span class="muted">${esc(d.spec)}</span></td><td>${esc(schedText(d))}</td><td>${esc(d.timing||'')}</td><td class="n">₹ ${inr(d.fee)}</td><td>${d.active===false?'Inactive':'Active'}</td><td style="white-space:nowrap"><button class="btn s" onclick="docForm('${d.id}')">Edit</button> <button class="btn l s" onclick="docToggle('${d.id}')">${d.active===false?'Activate':'Deactivate'}</button></td></tr>`).join('')}</table></div>`;
+};
+function docForm(id){const d=id?D.doctors.find(x=>x.id===id):{name:'',deg:'',spec:'',fee:300,timing:'',dow:[],weeks:[],active:true};
+ modal(`<h2>${id?'Edit doctor':'Add doctor'}</h2><div class="g2" style="grid-template-columns:1fr">
+ <label class="f">Name (with Dr.)<input id="d_name" value="${esc(d.name)}"></label>
+ <label class="f">Degrees<input id="d_deg" value="${esc(d.deg)}"></label>
+ <label class="f">Specialty<input id="d_spec" value="${esc(d.spec)}"></label>
+ <div class="g2"><label class="f">OPD fee (₹)<input id="d_fee" type="number" min="0" value="${d.fee}"></label><label class="f">Timing<input id="d_time" value="${esc(d.timing||'')}" placeholder="10:00 AM – 12:00 PM"></label><label class="f">Minutes per patient (token time)<input id="d_slot" type="number" min="1" value="${d.slot||10}"></label></div>
+ <div><div class="f label" style="font-size:12px;color:var(--m);font-weight:600">Visiting days</div><div class="row" style="gap:12px;margin-top:4px">${DN.map((n,i)=>`<label><input type="checkbox" class="d_dow" value="${i}"${(d.dow||[]).includes(i)?' checked':''}>${n}</label>`).join('')}</div></div>
+ <div><div style="font-size:12px;color:var(--m);font-weight:600">Only these weeks of the month (leave all unticked = every week)</div><div class="row" style="gap:12px;margin-top:4px">${[1,2,3,4,5].map(i=>`<label><input type="checkbox" class="d_wk" value="${i}"${(d.weeks||[]).includes(i)?' checked':''}>${WK[i]}</label>`).join('')}</div></div></div>
+ <div class="mfoot"><button class="btn l" onclick="closeModal()">Cancel</button><button class="btn g" onclick="docSave('${id||''}')">Save doctor</button></div>`)}
+function docSave(id){const name=$('d_name').value.trim();if(!name)return toast('Enter the doctor name.',true);
+ const dow=[...document.querySelectorAll('.d_dow:checked')].map(x=>+x.value),weeks=[...document.querySelectorAll('.d_wk:checked')].map(x=>+x.value);
+ const o=Object.assign(id?{}:{id:'d'+uid(),active:true},id?D.doctors.find(x=>x.id===id):{},{name,deg:$('d_deg').value.trim(),spec:$('d_spec').value.trim(),fee:num($('d_fee').value),timing:$('d_time').value.trim(),slot:num($('d_slot').value)||10,dow,weeks});
+ put('doctors',Object.assign({},o));log(id?'Edit doctor':'Add doctor',name,'fee ₹'+inr(o.fee));closeModal();views.doctors()}
+function docToggle(id){const d=D.doctors.find(x=>x.id===id);put('doctors',Object.assign({},d,{active:d.active===false}));log(d.active===false?'Activate doctor':'Deactivate doctor',d.name,'');views.doctors()}
+
+/* ---------- tests & rates (admin) ---------- */
+views.tests=function(){
+ $('view').innerHTML=`<div class="card"><div class="row"><label class="f" style="flex:1;min-width:200px">Search test<input value="${esc(TQ)}" oninput="TQ=this.value;drawTests()"></label>
+ <label class="f">Category<select onchange="TC=this.value;drawTests()"><option value="">All</option>${['Pathology','X-Ray','USG','ECG','EEG'].map(c=>`<option${TC===c?' selected':''}>${c}</option>`).join('')}</select></label>
+ <button class="btn g" onclick="testForm()">+ Add test</button><button class="btn" onclick="rateImport()">Import rates</button></div><div class="muted" style="margin-top:6px">A new rate is used from the next bill. Old bills are not changed.</div></div><div class="card"><div id="ttable"></div></div>`;drawTests();
+};
+function drawTests(){const q=TQ.trim().toLowerCase();
+ const a=D.tests.filter(t=>(!TC||cat(t.name)===TC)&&tmatch(t.name,q)).sort((x,y)=>x.name.localeCompare(y.name));
+ $('ttable').innerHTML=`<div class="muted" style="margin-bottom:6px">${a.length} tests${a.length>150?' (showing 150)':''}</div><div class="tw"><table><tr><th>Test name</th><th>Category</th><th class="n">Rate (₹)</th><th>Status</th><th></th></tr>${a.slice(0,150).map(t=>`<tr class="${t.active===false?'del':''}"><td>${esc(t.name)}</td><td>${cat(t.name)}</td><td class="n">${inr(t.rate)}</td><td>${t.active===false?'Off':'On'}</td><td><button class="btn s" onclick="testForm('${t.id}')">Edit</button></td></tr>`).join('')}</table></div>`}
+function testForm(id){const t=id?D.tests.find(x=>x.id===id):{name:'',rate:0,active:true};
+ modal(`<h2>${id?'Edit test':'Add test'}</h2><label class="f">Test name<input id="t_name" value="${esc(t.name)}"></label><label class="f" style="margin-top:8px">Rate (₹)<input id="t_rate" type="number" min="0" value="${t.rate}"></label><label style="display:block;margin-top:10px"><input type="checkbox" id="t_act" ${t.active===false?'':'checked'}>Available for billing</label>
+ <div class="mfoot"><button class="btn l" onclick="closeModal()">Cancel</button><button class="btn g" onclick="testSave('${id||''}')">Save test</button></div>`)}
+function testSave(id){const name=$('t_name').value.trim().toUpperCase();if(!name)return toast('Enter the test name.',true);const rate=num($('t_rate').value);
+ const old=id?D.tests.find(x=>x.id===id):null;const o=Object.assign({id:id||'t'+uid()},old||{},{name,rate,active:$('t_act').checked});put('tests',o);
+ log(id?'Edit test':'Add test',name,old?`₹${inr(old.rate)}→₹${inr(rate)}`:'₹'+inr(rate));closeModal();drawTests()}
+
+/* ---------- reports (admin) ---------- */
+function setRange(k){const n=new Date();let f,t=ymd(n);
+ if(k==='today')f=t;else if(k==='week'){const d=new Date(n);d.setDate(d.getDate()-((d.getDay()+6)%7));f=ymd(d)}
+ else if(k==='month')f=ymd(new Date(n.getFullYear(),n.getMonth(),1));
+ else{f=ymd(new Date(n.getFullYear(),n.getMonth()-1,1));t=ymd(new Date(n.getFullYear(),n.getMonth(),0))}
+ RF={from:f,to:t};views.reports()}
+views.reports=function(){
+ if(!RF.from)RF={from:ymd(new Date(new Date().getFullYear(),new Date().getMonth(),1)),to:ymd()};
+ $('view').innerHTML=`<div class="card"><div class="row"><label class="f">From<input type="date" value="${RF.from}" onchange="RF.from=this.value;drawReport()"></label><label class="f">To<input type="date" value="${RF.to}" onchange="RF.to=this.value;drawReport()"></label>
+ <button class="btn l s" onclick="setRange('today')">Today</button><button class="btn l s" onclick="setRange('week')">This week</button><button class="btn l s" onclick="setRange('month')">This month</button><button class="btn l s" onclick="setRange('last')">Last month</button>
+ <button class="btn g" style="margin-left:auto" onclick="exportCSV()">Download CSV (Excel)</button></div></div><div id="rep"></div>`;drawReport();
+};
+function drawReport(){
+ const a=D.bills.filter(b=>!b._del&&b.billDate>=RF.from&&b.billDate<=RF.to);
+ const pts=new Set(a.map(b=>b.pid)).size,newP=D.patients.filter(p=>p.created>=RF.from&&p.created<=RF.to).length;
+ const opdB=a.filter(b=>b.doctorId&&b.type!=='LAB'),labB=a.filter(b=>b.type!=='OPD'&&b.items.length);
+ const opdInc=opdB.reduce((s,b)=>s+b.fee,0),labInc=labB.reduce((s,b)=>s+b.items.reduce((x,i)=>x+num(i.r),0),0),disc=a.reduce((s,b)=>s+b.disc,0),billed=a.reduce((s,b)=>s+b.total,0),due=a.reduce((s,b)=>s+b.due,0),coll=collection(RF.from,RF.to);
+ const days={};a.forEach(b=>{(days[b.billDate]=days[b.billDate]||[]).push(b)});
+ const dayKeys=Object.keys(days).sort();
+ const collByDay={};D.bills.forEach(b=>{if(b._del)return;(b.pays||[]).forEach(p=>{if(p.d>=RF.from&&p.d<=RF.to)collByDay[p.d]=(collByDay[p.d]||0)+p.a})});
+ const allDays=[...new Set([...dayKeys,...Object.keys(collByDay)])].sort();
+ const docRows=D.doctors.map(d=>{const x=opdB.filter(b=>b.doctorId===d.id);return{d,n:new Set(x.map(b=>b.pid)).size,bills:x.length,fee:x.reduce((s,b)=>s+b.fee,0)}}).filter(r=>r.bills).sort((x,y)=>y.fee-x.fee);
+ const cats={};labB.forEach(b=>b.items.forEach(i=>{const c=cat(i.n);cats[c]=cats[c]||{n:0,amt:0};cats[c].n++;cats[c].amt+=num(i.r)}));
+ const top={};labB.forEach(b=>b.items.forEach(i=>{top[i.n]=(top[i.n]||0)+1}));
+ const topA=Object.entries(top).sort((x,y)=>y[1]-x[1]).slice(0,10);
+ $('rep').innerHTML=`<div class="stats"><div class="stat s1"><b>${pts}</b><span>Patients</span></div><div class="stat s5"><b>${newP}</b><span>New patients</span></div><div class="stat s2"><b>${opdB.length}</b><span>OPD bills</span></div><div class="stat s3"><b>${labB.length}</b><span>Lab bills</span></div><div class="stat s4"><b>₹ ${inr(coll)}</b><span>Cash collected</span></div><div class="stat" style="background:#9a3b32"><b>₹ ${inr(due)}</b><span>Due on these bills</span></div></div>
+ <div class="g3"><div class="card"><h2>Income</h2><div class="kv"><span>OPD fees</span><b>₹ ${inr(opdInc)}</b><span>Lab / X-ray / USG / ECG</span><b>₹ ${inr(labInc)}</b><span>Discount given</span><b>₹ ${inr(disc)}</b><span>Total billed</span><b>₹ ${inr(billed)}</b></div></div>
+ <div class="card"><h2>Lab income by type</h2>${Object.keys(cats).length?`<table>${Object.entries(cats).map(([c,v])=>`<tr><td>${c}</td><td class="n">${v.n} tests</td><td class="n">₹ ${inr(v.amt)}</td></tr>`).join('')}</table>`:'<div class="em">No lab tests.</div>'}</div>
+ <div class="card"><h2>Most done tests</h2>${topA.length?`<table>${topA.map(x=>`<tr><td>${esc(x[0])}</td><td class="n">${x[1]}</td></tr>`).join('')}</table>`:'<div class="em">No lab tests.</div>'}</div></div>
+ <div class="card"><h2>Doctor-wise performance</h2>${docRows.length?`<div class="tw"><table><tr><th>Doctor</th><th class="n">Patients</th><th class="n">OPD bills</th><th class="n">OPD fees</th><th></th></tr>${docRows.map(r=>`<tr><td>${esc(r.d.name)}<br><span class="muted">${esc(r.d.spec)}</span></td><td class="n">${r.n}</td><td class="n">${r.bills}</td><td class="n">₹ ${inr(r.fee)}</td><td><button class="btn l s" onclick="BF={from:RF.from,to:RF.to,type:'',doc:'${r.d.id}',q:'',due:false};nav('bills')">Bills</button></td></tr>`).join('')}</table></div>`:'<div class="em">No OPD patients in this period.</div>'}</div>
+ <div class="card"><h2>Day-wise</h2>${allDays.length?`<div class="tw"><table><tr><th>Date</th><th class="n">Patients</th><th class="n">Bills</th><th class="n">Billed</th><th class="n">Collected</th><th class="n">Due</th></tr>${allDays.map(k=>{const x=days[k]||[];return`<tr><td>${fd(k)}</td><td class="n">${new Set(x.map(b=>b.pid)).size}</td><td class="n">${x.length}</td><td class="n">${inr(x.reduce((s,b)=>s+b.total,0))}</td><td class="n">${inr(collByDay[k]||0)}</td><td class="n">${inr(x.reduce((s,b)=>s+b.due,0))}</td></tr>`}).join('')}</table></div>`:'<div class="em">No data in this period.</div>'}</div>`;
+}
+function exportCSV(){
+ const a=D.bills.filter(b=>!b._del&&b.billDate>=RF.from&&b.billDate<=RF.to).sort((x,y)=>x.ts-y.ts);
+ const h=['Bill No','Date','Time','Type','Patient ID','Patient','Age','Sex','Phone','Doctor','OPD Fee','Tests','Discount','Total','Paid','Due','Created By'];
+ const rows=a.map(b=>[b.no,fd(b.billDate),ftShort(b.ts),typeName(b.type),b.pno,b.title+' '+b.name,b.age,b.sex,b.phone,b.doctorName,b.fee,b.items.map(i=>i.n).join('; '),b.disc,b.total,b.paid,b.due,b.createdBy]);
+ download(BRAND.file+'_Bills_'+RF.from+'_to_'+RF.to+'.csv','\ufeff'+[h].concat(rows).map(r=>r.map(csvCell).join(',')).join('\r\n'),'text/csv');log('Export CSV',RF.from+' to '+RF.to,a.length+' bills')}
+
+/* ---------- users (admin) ---------- */
+views.users=function(){
+ $('view').innerHTML=`<div class="card"><div class="row" style="justify-content:space-between"><div class="muted">Choose a role (it fills the usual permissions) and then tick or untick anything for that person.</div><button class="btn g" onclick="userForm()">+ Add user</button></div></div>
+ <div class="card tw"><table><tr><th>Name</th><th>Role</th><th>Can do</th><th>Doctor</th><th>Status</th><th></th></tr>${D.users.map(u=>`<tr class="${u.active===false?'del':''}"><td>${esc(u.name)}</td><td>${ROLEN[rl(u)]}</td><td style="font-size:12.5px">${esc(permText(u))}</td><td>${esc((D.doctors.find(d=>d.id===u.doctorId)||{}).name||'')}</td><td>${u.active===false?'Disabled':'Active'}</td><td><button class="btn s" onclick="userForm('${u.id}')">Edit / change PIN</button></td></tr>`).join('')}</table></div>`;
+};
+function userForm(id){const u=id?D.users.find(x=>x.id===id):{name:'',role:'opd',active:true};
+ modal(`<h2>${id?'Edit user':'Add user'}</h2><div class="g2" style="grid-template-columns:1fr">
+ <label class="f">Name<input id="u_name" value="${esc(u.name)}"></label>
+ <label class="f">Role<select id="u_role" onchange="userPreset(this.value)">${[['admin','Admin / Owner'],['opd','OPD / Reception'],['lab','Lab / Test'],['doctor','Doctor']].map(r=>`<option value="${r[0]}"${rl(u)===r[0]?' selected':''}>${r[1]}</option>`).join('')}</select></label>
+ <label class="f" id="u_docw" style="display:${rl(u)==='doctor'?'block':'none'}">Which doctor<select id="u_doc">${D.doctors.map(d=>`<option value="${d.id}"${u.doctorId===d.id?' selected':''}>${esc(d.name)}</option>`).join('')}</select></label>
+ <div class="f" style="font-size:12px;color:var(--m);font-weight:600;margin-top:6px">Permissions — what this user can do <span style="font-weight:400">(choosing a role above fills the usual ticks; change any you like)</span></div><div id="u_perms" style="display:grid;gap:5px">${PERMS.map(p=>`<label style="font-weight:400"><input type="checkbox" class="u_perm" value="${p[0]}"${(u.perms||PRESET[rl(u)]||[]).includes(p[0])?' checked':''}>${p[1]}</label>`).join('')}</div><div class="muted" style="font-size:12px">Only Admin: Doctors, Rates, Report Signers, Reports, Users, Settings, Backup, edit/delete bills.</div>
+  <label class="f">${id?'New PIN (leave blank to keep)':'PIN (4–6 digits)'}<input id="u_pin" type="password" inputmode="numeric" autocomplete="new-password"></label>
+ <label><input type="checkbox" id="u_act" ${u.active===false?'':'checked'}>Active</label></div>
+ <div class="mfoot"><button class="btn l" onclick="closeModal()">Cancel</button><button class="btn g" onclick="userSave('${id||''}')">Save user</button></div>`)}
+function userSave(id){const name=$('u_name').value.trim(),pin=$('u_pin').value.trim(),role=$('u_role').value,act=$('u_act').checked;
+ if(!name)return toast('Enter a name.',true);if(!id&&!/^\d{4,6}$/.test(pin))return toast('PIN must be 4 to 6 digits.',true);if(pin&&!/^\d{4,6}$/.test(pin))return toast('PIN must be 4 to 6 digits.',true);
+ const old=id?D.users.find(x=>x.id===id):null;
+ if(old&&old.role==='admin'&&(role!=='admin'||!act)&&D.users.filter(x=>x.role==='admin'&&x.active!==false).length<2)return toast('At least one active Admin is required.',true);
+ const o=Object.assign({id:id||'u'+uid()},old||{},{name,role,active:act,doctorId:role==='doctor'?$('u_doc').value:'',perms:[...document.querySelectorAll('.u_perm:checked')].map(x=>x.value)});if(pin)o.pin=hp(pin);
+ put('users',o);log(id?'Edit user':'Add user',name,role+(pin?' · PIN changed':''));if(ME.id===o.id)ME=o;closeModal();views.users()}
+
+/* ---------- settings (admin) ---------- */
+views.settings=function(){
+ const f=(k,l,ph)=>`<label class="f">${l}<input id="s_${k}" value="${esc(S[k])}" ${ph?`placeholder="${ph}"`:''}></label>`;
+ $('view').innerHTML=`<div class="card"><h2>Clinic details on printed bills</h2><div class="g3">
+ ${f('clinicName','Clinic name (big)')}${f('sub','Clinic name (second part)')}${f('addr','Address on money receipt')}${f('recPhones','Phone numbers on money receipt')}${f('email','Email on money receipt')}${f('slipAddr','Address on appointment slip')}${f('slipPhones','Phone numbers on appointment slip')}${f('billPrefix','Bill no. prefix (e.g. G/L)')}${f('pidFmt','Patient ID format ({d}=computer code, {n}=number, {n5}=5-digit number)')}${f('slipNotice','Notice on appointment slip (optional)')}${f('slipFooter','Footer line on slip (optional)')}${f('tokNotice','Notice on token slip')}
+ <label class="f">Money receipt paper<select id="s_paper"><option value="A5L"${S.paper==='A5L'?' selected':''}>A5 landscape (half sheet)</option><option value="A4P"${S.paper==='A4P'?' selected':''}>A4 portrait</option></select></label>
+ <label class="f">This computer’s code (1, 2, 3 …)<input id="s_dev" value="${esc(S.dev)}" maxlength="3"></label></div>
+ <div class="muted" style="margin-top:6px">Give every computer a different code. It is part of the bill number (${esc(S.billPrefix)}-<b>1</b>-PT-16), so two computers never make the same bill number.</div>
+ <div class="row" style="margin-top:12px"><div><div class="muted" style="font-size:12px;font-weight:600">Logo</div><div style="width:70px;height:70px">${logoHTML()}</div></div><label class="f">Upload logo (PNG/JPG, small)<input type="file" accept="image/*" onchange="logoUp(this)"></label>${S.logo?'<button class="btn l s" onclick="S.logo=\'\';saveSettings();saveShared();views.settings()">Use default logo</button>':''}</div>
+ <div class="mfoot" style="justify-content:flex-start"><button class="btn g" onclick="saveSettingsForm()">Save settings</button></div></div>
+ <div class="card"><h2>Lab report print settings</h2><div class="g3">${f('repMachine','"Test done by" line (machine / method)')}${f('repNB','N.B. line under results')}${f('repBar','Disclaimer bar at the bottom (leave empty to hide)')}</div>
+ <div class="row" style="margin-top:12px"><label class="f">Header image (optional — replaces the logo + name block)<input type="file" accept="image/*" onchange="repImgUp(this,'repHeader')"></label>${S.repHeader?'<img src="'+S.repHeader+'" style="height:44px;border:1px solid var(--ln)"> <button class="btn l s" onclick="repImgClear(\'repHeader\')">Remove</button>':''}</div>
+ <div class="row" style="margin-top:8px"><label class="f">Footer image (optional — replaces the address block)<input type="file" accept="image/*" onchange="repImgUp(this,'repFooter')"></label>${S.repFooter?'<img src="'+S.repFooter+'" style="height:44px;border:1px solid var(--ln)"> <button class="btn l s" onclick="repImgClear(\'repFooter\')">Remove</button>':''}</div>
+ <div class="mfoot" style="justify-content:flex-start"><button class="btn g" onclick="saveSettingsForm()">Save settings</button></div></div>
+ <div class="card"><h2>Management software help</h2><p style="margin:0">For any problem, change or new feature call <b><a href="tel:${HELP_PHONE}">${HELP_PHONE}</a></b>.</p></div>`;
+};
+function saveSettingsForm(){['clinicName','sub','addr','recPhones','email','slipAddr','slipPhones','billPrefix','pidFmt','slipNotice','slipFooter','tokNotice','repMachine','repNB','repBar','dev'].forEach(k=>{if($('s_'+k))S[k]=$('s_'+k).value.trim()});S.dev=(S.dev||'1').replace(/[^0-9A-Za-z]/g,'')||'1';S.paper=$('s_paper').value;saveSettings();saveShared();log('Settings changed','','');toast('Settings saved.')}
+function logoUp(inp){const f=inp.files[0];if(!f)return;if(f.size>400000)return toast('Logo is too big. Use an image under 400 KB.',true);const r=new FileReader();r.onload=()=>{S.logo=r.result;saveSettings();saveShared();views.settings()};r.readAsDataURL(f)}
+
+/* ---------- backup & cloud sync (admin) ---------- */
+views.backup=function(){
+ const last=M.lastBackup?new Date(M.lastBackup).toLocaleString():'never';
+ $('view').innerHTML=`<div class="card"><h2>Backup</h2><p style="margin-top:0">All bills, patients, doctors and rates are saved on this computer automatically, even without internet. A backup file is an extra safety copy.</p>
+ <div class="row"><button class="btn g" onclick="doBackup()">Download backup now</button><label style="margin-bottom:8px"><input type="checkbox" ${S.autoBackup?'checked':''} onchange="S.autoBackup=this.checked;saveSettings()">Download a backup automatically on the first Admin login of each day</label></div>
+ <div class="muted">Last backup: ${last}. Keep the file on a pen drive or in Google Drive.</div>
+ <hr style="border:0;border-top:1px solid var(--ln);margin:14px 0"><h3 style="margin:0 0 8px;font-size:14px">Restore from a backup file</h3>
+ <div class="row"><label><input type="radio" name="rmode" value="merge" checked>Merge (keep newer records) — recommended</label><label><input type="radio" name="rmode" value="replace">Replace everything on this computer</label></div>
+ <input type="file" accept=".json,application/json" onchange="restoreFile(this)" style="margin-top:8px"></div>
+ <div class="card"><h2>Online sync (server + Supabase database)</h2><p style="margin-top:0">When you open this software from the Render link, every computer and mobile shows the same live data. If internet goes off, billing continues on that computer and everything uploads when internet returns.</p>
+ <div class="g2" style="grid-template-columns:1fr"><label class="f">Server address (leave blank when you opened the Render link)<input id="sb_url" value="${esc(S.sbUrl)}" placeholder="https://greenlife.onrender.com"></label></div>
+ <div class="row" style="margin-top:8px"><button class="btn" onclick="testCloud()">Save &amp; test connection</button><button class="btn g" onclick="syncNow(true)">Sync now</button><button class="btn o" onclick="if(confirm('Upload ALL data from this computer to the server? Do this once on the main computer, or after the server data was reset.'))pushAll()">Upload everything to server</button><button class="btn l" onclick="window.open(base()+'/api/export')">Download server backup</button></div>
+ <div id="sb_res" style="margin-top:8px" class="muted">${cfgOK()?(pending()+' record(s) waiting to upload.'+(M.lastSync?' Last sync '+new Date(M.lastSync).toLocaleString()+'.':'')):'Opened as a file — sync is off. Open the Render link to use online sync.'}</div>
+ <div class="muted" style="margin-top:8px">If two computers edit the same record, the later change wins, so keep the computer clocks correct.</div></div>`;
+};
+
+/* ---------- audit (admin) ---------- */
+let AQ='';
+views.audit=function(){$('view').innerHTML=`<div class="card"><label class="f">Search log<input value="${esc(AQ)}" placeholder="User, action, bill no…" oninput="AQ=this.value;drawAudit()"></label></div><div class="card"><div id="atable"></div></div>`;drawAudit()};
+function drawAudit(){const q=AQ.trim().toLowerCase();const a=D.audit.filter(x=>!q||(x.user+' '+x.action+' '+x.ref+' '+x.detail).toLowerCase().includes(q)).sort((x,y)=>y.ts-x.ts).slice(0,300);
+ $('atable').innerHTML=a.length?`<div class="tw"><table><tr><th>When</th><th>User</th><th>Action</th><th>Reference</th><th>Details</th></tr>${a.map(x=>`<tr><td style="white-space:nowrap">${fd(ymd(new Date(x.ts)))} ${ftShort(x.ts)}</td><td>${esc(x.user)}</td><td>${esc(x.action)}</td><td>${esc(x.ref)}</td><td>${esc(x.detail)}</td></tr>`).join('')}</table></div>`:'<div class="em">Nothing logged yet.</div>'}
+
+/* ---------- help ---------- */
+views.help=function(){
+ $('view').innerHTML=`<div class="card" style="border-left:5px solid var(--g)"><h2>Management software help</h2><p style="margin:0;font-size:16px">Call or WhatsApp: <b><a href="tel:${HELP_PHONE}">${HELP_PHONE}</a></b> <a class="btn g s" style="text-decoration:none;margin-left:8px" href="https://wa.me/91${HELP_PHONE}" target="_blank" rel="noopener">WhatsApp</a></p></div>
+ <div class="card"><h2>Daily use</h2><ol style="margin:0 0 0 18px;padding:0;line-height:1.8"><li><b>OPD desk:</b> patient scans the QR and books a token → it appears in <b>Token Bookings</b> with a bell. Click <b>Open &amp; collect</b>, take cash/UPI, then <b>Save &amp; Print</b>. Walk-in patient: <b>New OPD Slip</b>.</li><li><b>Lab desk:</b> <b>New Lab Bill</b> → type the test name and press Enter → <b>Save &amp; Print</b>.</li><li>Any bill: <b>Save &amp; WhatsApp</b> sends the slip to the patient’s phone.</li><li>Patient comes back to pay the due: <b>Bills → Receive due</b>.</li></ol></div>
+ <div class="card"><h2>Works without internet</h2><p style="margin:0">Open this file in Chrome or Edge. All doctors, rates and bills are stored on the computer. Billing and printing never stop if internet goes off. Always open it from the same browser and the same file location. Take a backup every week (Backup &amp; Sync) — never clear browser data without a backup.</p></div>
+ <div class="card"><h2>Who can do what</h2><p style="margin:0"><b>Admin</b> — everything: doctors, rates, reports, edit/delete bills, users, backup. <b>OPD / Reception</b> — OPD slips, token bookings, due, QR poster. <b>Lab / Test</b> — lab bills and due only. <b>Doctor</b> — sees only his own patients and bills. Combined (OPD + Lab) bills are made by Admin.</p></div>`;
+};
+
+/* ---------- printing ---------- */
+function hdrHTML(){return `<div class="rh"><div class="lg">${logoHTML()}</div><div><div class="rt1"><span class="g">${esc(S.clinicName)}</span> <span class="r">${esc(S.sub)}</span></div><div class="ra">${esc(S.addr)}</div><div class="ra">Mob:- ${esc(S.recPhones)}${S.email?', Email id - '+esc(S.email):''}</div></div></div>`}
+function docLabel(b){return b.doctorId?`${b.doctorName}${b.doctorDeg?' ('+b.doctorDeg+')':''}${b.doctorSpec?' — '+b.doctorSpec:''}`:'SELF'}
+function receiptHTML(b){
+ const rows=[];
+ if(b.doctorId&&b.type!=='LAB')rows.push({n:'OPD CONSULTATION — '+docLabel(b),d:b.apptDate||b.billDate,a:b.fee});
+ b.items.forEach(i=>rows.push({n:i.n,d:i.del,a:i.r}));
+ const sub=rows.reduce((s,r)=>s+num(r.a),0);
+ return `<div class="rc">${hdrHTML()}${barcode(b.no)}<div class="rtitle">MONEY RECEIPT/INVOICE</div>
+ <div class="rmeta"><table><tr><td>Patient Name</td><td>: <b>${esc(b.title)} ${esc(b.name.toUpperCase())}</b></td></tr><tr><td>Age</td><td>: ${esc(ageTxt(b.age))}</td></tr><tr><td>Sex</td><td>: ${esc((b.sex||'').toUpperCase())}${b.weight?' &nbsp; Weight: '+esc(b.weight)+' kg':''}</td></tr><tr><td>Doctor Name</td><td>: <b>${esc(b.doctorId?b.doctorName:'SELF')}</b></td></tr><tr><td>Phone No.</td><td>: ${esc(b.phone||'')}${b.guardian?' &nbsp; (of '+esc(b.guardian)+')':''}</td></tr></table>
+ <table class="rtbl"><tr><td>Patient ID</td><td>:</td><td><b>${esc(b.pno)}</b></td></tr><tr><td>Booking Date</td><td>:</td><td>${fd(b.apptDate||b.billDate)}</td></tr><tr><td>Billing Date</td><td>:</td><td>${fd(b.billDate)}</td></tr><tr><td>Billing Time</td><td>:</td><td>${ft(b.ts)}</td></tr><tr><td>Bill No.</td><td>:</td><td>${esc(b.no)}</td></tr></table></div>
+ <table class="items"><thead><tr><th style="width:44px;text-align:left">Sr.No</th><th style="text-align:left">Test Name</th><th style="width:100px;text-align:left">Delivery Date</th><th style="width:100px;text-align:right">Amount in Rs.</th></tr></thead><tbody>${rows.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.n)}</td><td>${fd(r.d)}</td><td style="text-align:right">${num(r.a).toFixed(2)}</td></tr>`).join('')}</tbody></table>
+ <div class="rbot"><div><b>Rupees ${esc(words(b.total))} Only.</b><table><tr><td><b>PAID AMOUNT :</b></td><td><b>${b.paid.toFixed(2)}</b></td></tr><tr><td><b>DUE AMOUNT :</b></td><td><b>${b.due.toFixed(2)}</b></td></tr></table><div style="margin-top:14px"><u><b>Authorise Signature</b></u></div><div style="margin-top:4px"><b>Created By : ${esc(b.createdBy)}</b></div></div>
+ <table class="rtot"><tr><td>Total Amount :</td><td>${sub.toFixed(2)}</td></tr>${b.disc>0?`<tr><td>Discount :</td><td>- ${b.disc.toFixed(2)}</td></tr>`:''}<tr class="l"><td><b>Net Amount :</b></td><td><b>${b.total.toFixed(2)}</b></td></tr></table></div>
+ <div class="rnote">*********** PLEASE BRING THE MONEY RECEIPT AT THE TIME OF REPORT DISPATCH ***********</div></div>`;
+}
+function slipHTML(b){
+ const ln=(a,av,bb,bv,c,cv)=>`<div class="ln"><span>${a}</span><u>${esc(av)}</u>${bb?`<span>${bb}</span><u style="flex:.6">${esc(bv)}</u>`:''}${c?`<span>${c}</span><u style="flex:.6">${esc(cv)}</u>`:''}</div>`;
+ return `<div class="sl"><div class="h"><div class="lg">${logoHTML()}</div><div><b>${esc(S.clinicName+' '+S.sub.replace(' AND ',' & '))}</b><span>${esc(S.slipAddr)}</span><span>Mobile.-${esc(S.slipPhones)}</span></div></div>
+ <div class="ln"><span>No.-</span><u>${esc(b.no)}</u><span>Date</span><u style="flex:.6">${fd(b.billDate)}</u></div>
+ ${ln('Name',b.title+' '+b.name,'Age',ageTxt(b.age),'Sex',b.sex).replace('</div>','<span>Weight</span><u style="flex:.5">'+esc(b.weight||'')+'</u></div>')}
+ ${ln('of',b.guardian||'','Contact No.',b.phone||'')}
+ ${ln('for Dr.',docLabel(b))}
+ ${ln('Appointment',fd(b.apptDate||b.billDate),'Time (Apporx)',b.apptTime||'')}
+ <div class="ln"><span>Booking No.</span><u style="flex:.8">${esc(b.bookingNo)}</u><span>Fee ₹</span><u style="flex:.5">${inr(b.fee)}${b.due>0?' (due '+inr(b.due)+')':''}</u></div>
+ <div class="sg">${S.slipNotice?`<div class="nb">${esc(S.slipNotice)}</div>`:'<div style="flex:1"></div>'}<i>Authorised Signature</i></div>
+ ${S.slipFooter?`<div class="ft">${esc(S.slipFooter)}</div>`:''}</div>`;
+}
+function printHTML(html,kind){
+ $('printArea').innerHTML=html;
+ $('pg').textContent=kind==='slip'?'@page{size:148mm 110mm;margin:4mm}':kind==='report'?'@page{size:A4 portrait;margin:8mm}':(kind==='poster'||S.paper==='A4P')?'@page{size:A4 portrait;margin:10mm}':'@page{size:A5 landscape;margin:6mm}';
+ document.body.classList.add('printing');
+ const done=()=>{document.body.classList.remove('printing');window.removeEventListener('afterprint',done)};
+ window.addEventListener('afterprint',done);
+ setTimeout(()=>window.print(),kind==='poster'?700:150);
+}
+function printBill(b,kind){if(!b)return;printHTML(kind==='slip'?slipHTML(b):receiptHTML(b),kind)}
+
+
+/* ---------- helpers: role buttons, WhatsApp, beep ---------- */
+function billBtns(id){const t=allowedTypes();return (t.includes('OPD')?` <button class="btn s" onclick="startBill('OPD','${id}')">OPD</button>`:'')+(t.includes('LAB')?` <button class="btn g s" onclick="startBill('LAB','${id}')">Lab</button>`:'')+(t.includes('COMBINED')?` <button class="btn o s" onclick="startBill('COMBINED','${id}')">OPD+Lab</button>`:'')}
+function waOpen(phone,lines){const d=String(phone||'').replace(/\D/g,'');const n=d.length===10?'91'+d:d;window.open('https://wa.me/'+n+'?text='+encodeURIComponent(lines.join('\n')),'_blank')}
+function waBill(id){const b=D.bills.find(x=>x.id===id);if(!b)return;
+ const L=['*'+S.clinicName+' '+S.sub+'*',S.addr,'','Bill No: '+b.no,'Date: '+fd(b.billDate)+' '+ftShort(b.ts),'Patient: '+b.title+' '+b.name+(b.age?' ('+ageTxt(b.age)+(b.sex?', '+b.sex:'')+')':'')];
+ if(b.doctorId&&b.type!=='LAB'){L.push('Doctor: '+b.doctorName);if(/^Token/i.test(b.bookingNo||''))L.push(b.bookingNo);if(b.apptTime)L.push('Time (approx): '+b.apptTime);L.push('OPD Fee: ₹'+inr(b.fee))}
+ b.items.forEach((i,k)=>L.push((k+1)+'. '+i.n+' — ₹'+inr(i.r)+' (Delivery: '+fd(i.del)+')'));
+ if(b.disc>0)L.push('Discount: ₹'+inr(b.disc));
+ L.push('','*Total: ₹'+inr(b.total)+'*','Paid: ₹'+inr(b.paid),'Due: ₹'+inr(b.due),'','Please bring the money receipt at the time of report dispatch.','Contact: '+S.recPhones);
+ waOpen(b.phone,L)}
+function waToken(id){const t=D.tokens.find(x=>x.id===id);if(!t)return;
+ waOpen(t.phone,['*'+S.clinicName+' '+S.sub+'*','','*Token No. '+t.no+'*','Patient: '+t.name,'Doctor: '+t.doctorName,'Date: '+fd(t.date)+(t.approx?'  ·  Time (approx): '+t.approx:''),'OPD Fee: ₹'+inr(t.fee)+(t.status==='unpaid'?'  (UNPAID — pay at reception)':''),'','Please tell this Token No. at the reception counter.','Contact: '+S.slipPhones])}
+function beep(){try{const c=new (window.AudioContext||window.webkitAudioContext)();[0,.18].forEach(t=>{const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=t?1040:780;g.gain.value=.15;o.start(c.currentTime+t);o.stop(c.currentTime+t+.14)})}catch(e){}}
+
+/* ---------- token bookings (patient self-booking via QR) ---------- */
+let TKF={date:'',st:'unpaid',doc:''};
+views.tokens=function(){
+ if(!TKF.date)TKF.date=ymd();
+ const url=(base()||(location.protocol==='file:'?'':location.origin))+'/book';
+ $('view').innerHTML=`<div class="card"><div class="row"><label class="f">Date<input type="date" value="${TKF.date}" onchange="TKF.date=this.value;drawTokens()"></label>
+ <label class="f">Status<select onchange="TKF.st=this.value;drawTokens()">${[['unpaid','Unpaid (waiting)'],['billed','Paid / billed'],['cancelled','Cancelled'],['','All']].map(x=>`<option value="${x[0]}"${TKF.st===x[0]?' selected':''}>${x[1]}</option>`).join('')}</select></label>
+ <label class="f">Doctor<select onchange="TKF.doc=this.value;drawTokens()"><option value="">All</option>${D.doctors.map(d=>`<option value="${d.id}"${TKF.doc===d.id?' selected':''}>${esc(d.name)}</option>`).join('')}</select></label>
+ <div class="muted" style="flex:1;min-width:220px">${url.length>5?`Patients book at <b>${esc(url)}</b> (QR Poster). New tokens appear here by themselves.`:'Open the software from the Render link to receive QR bookings.'}</div></div></div><div class="card"><div id="tktable"></div></div>`;
+ drawTokens();
+};
+function drawTokens(){
+ const a=D.tokens.filter(t=>t.date===TKF.date&&(!TKF.st||t.status===TKF.st)&&(!TKF.doc||t.doctorId===TKF.doc)).sort((x,y)=>(x.createdAt||0)-(y.createdAt||0));
+ const el=$('tktable');if(!el)return;
+ el.innerHTML=a.length?`<div class="tw"><table><tr><th>Token</th><th>Patient</th><th>Doctor</th><th>Time (approx)</th><th class="n">Fee</th><th>Status</th><th></th></tr>${a.map(t=>`<tr><td><b style="font-size:20px">#${t.no}</b></td><td>${esc(t.name)}<br><span class="muted">${esc(ageTxt(t.age))} ${esc(t.sex)} · ${esc(t.phone)}${t.guardian?' · of '+esc(t.guardian):''}</span></td><td>${esc(t.doctorName)}</td><td>${esc(t.approx||'—')}</td><td class="n">₹ ${inr(t.fee)}</td><td>${t.status==='unpaid'?'<span class="tag cmb">Unpaid</span>':t.status==='billed'?'<span class="tag opd">Paid</span><br><span class="muted">'+esc(t.billNo||'')+'</span>':'<span class="tag">Cancelled</span>'}</td>
+ <td style="white-space:nowrap">${t.status==='unpaid'?`<button class="btn g s" onclick="openToken('${t.id}')">Open &amp; collect</button> <button class="btn s" onclick="printToken('${t.id}')">Print token</button> <button class="btn s" style="background:#1da851" onclick="waToken('${t.id}')">WhatsApp</button> <button class="btn r s" onclick="cancelToken('${t.id}')">Cancel</button>`:''}</td></tr>`).join('')}</table></div>`:'<div class="em">No tokens for these filters.</div>';
+}
+function openToken(id){const t=D.tokens.find(x=>x.id===id);if(!t||t.status!=='unpaid')return;
+ const low=t.name.trim().toLowerCase();
+ const p=D.patients.find(x=>x.phone&&x.phone===t.phone&&x.name.trim().toLowerCase()===low);
+ F=newForm('OPD',p);
+ if(!p){const kid=num(t.age)>0&&num(t.age)<14;Object.assign(F,{title:t.sex==='Female'?(kid?'Baby':'Mrs.'):(kid?'Master':'Mr.'),name:t.name,age:t.age,sex:t.sex,phone:t.phone,guardian:t.guardian||''})}
+ Object.assign(F,{doc:t.doctorId,fee:t.fee,apptDate:t.date,apptTime:t.approx||'',bookingNo:'Token '+t.no,tokenId:t.id});
+ page='billing';render();window.scrollTo(0,0)}
+function cancelToken(id){const t=D.tokens.find(x=>x.id===id);if(!t||!confirm('Cancel token #'+t.no+' ('+t.name+')?'))return;put('tokens',Object.assign({},t,{status:'cancelled'}));log('Token cancelled','Token '+t.no,t.name);refreshBadge();drawTokens()}
+function tokenSlipHTML(t){return `<div class="sl"><div class="h"><div class="lg">${logoHTML()}</div><div><b>${esc(S.clinicName+' '+S.sub.replace(' AND ',' & '))}</b><span>${esc(S.slipAddr)}</span><span>Mobile.-${esc(S.slipPhones)}</span></div></div>
+ <div style="text-align:center;margin:6px 0"><div style="font-size:13px;font-weight:700">TOKEN / BOOKING SLIP · টোকেন</div><div style="font-size:40px;font-weight:800;line-height:1.15;color:#000">Token No. ${t.no}</div></div>
+ <div class="ln"><span>Name</span><u>${esc(t.name)}</u><span>Age / Sex</span><u style="flex:.6">${esc(ageTxt(t.age))} ${esc(t.sex)}</u></div>
+ <div class="ln"><span>for Dr.</span><u>${esc(t.doctorName)}${t.doctorSpec?' — '+esc(t.doctorSpec):''}</u></div>
+ <div class="ln"><span>Date</span><u>${fd(t.date)}</u><span>Time (Apporx)</span><u style="flex:.6">${esc(t.approx||'')}</u></div>
+ <div class="ln"><span>Fee ₹</span><u style="flex:.5">${inr(t.fee)}</u><span>Status</span><u style="flex:.7">${t.status==='unpaid'?'UNPAID':'PAID'}</u></div>
+ <div class="sg">${S.tokNotice?`<div class="nb">${esc(S.tokNotice)}</div>`:'<div style="flex:1"></div>'}<i>Authorised Signature</i></div>
+ ${S.slipFooter?`<div class="ft">${esc(S.slipFooter)}</div>`:''}</div>`}
+function printToken(id){const t=D.tokens.find(x=>x.id===id);if(t)printHTML(tokenSlipHTML(t),'slip')}
+
+/* ---------- QR poster ---------- */
+function posterHTML(){const origin=base()||location.origin;
+ return `<div class="poster" style="text-align:center;border:6px solid #1456a0;padding:18px;font-family:Arial,'Nirmala UI','Noto Sans',sans-serif;color:#1456a0;background:#fff"><div class="lg" style="display:flex;justify-content:center">${logoHTML()}</div>
+ <div style="font-size:26px;font-weight:800;margin-top:4px">${esc(S.clinicName+' '+S.sub.replace(' AND ',' & '))}</div>
+ <div style="font-size:30px;font-weight:800;margin:14px 0;color:#000;line-height:1.35">ডাক্তারের জন্য কিউআর (QR) কোডটি স্ক্যান করুন।</div>
+ <img src="${esc(origin)}/qr.svg" alt="QR" style="width:330px;height:330px">
+ <div style="font-size:19px;margin-top:6px;color:#000;font-weight:700">Scan the QR code to book your doctor token</div>
+ <div style="font-size:15px;margin-top:4px">${esc(origin)}/book</div>
+ <div style="margin-top:12px;font-size:17px;color:#000;line-height:1.7;text-align:left;display:inline-block">১. QR কোড স্ক্যান করুন<br>২. নাম, বয়স ও মোবাইল নম্বর লিখুন<br>৩. ডাক্তার বেছে নিন<br>৪. “টোকেন বুক করুন” চাপুন<br>৫. রিসেপশনে টোকেন নম্বর বলে টাকা জমা দিন</div></div>`}
+views.qr=function(){const ok=location.protocol!=='file:'||!!base();
+ $('view').innerHTML=`<div class="card"><h2>Patient self-booking QR poster</h2>${ok?`<p style="margin-top:0">Print this poster and stick it on the reception counter. The patient scans it, fills the details, picks a doctor and gets a token. It then appears in <b>Token Bookings</b>.</p><button class="btn g" onclick="printHTML(posterHTML(),'poster')">Print poster (A4)</button>`:'<div class="banner">Open the software from the Render link (or enter the server address in Backup &amp; Sync) to get the QR poster.</div>'}</div>${ok?`<div class="card" style="max-width:600px">${posterHTML()}</div>`:''}`};
+
+
+/* ===================== LAB REPORT, SIGNERS, PERMISSIONS, RATE IMPORT ===================== */
+const nz=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'');
+const tmatch=(name,q)=>{q=String(q||'').trim().toLowerCase();if(!q)return true;const n=nz(name);return q.split(/\s+/).every(w=>{w=nz(w);return !w||n.includes(w)})};
+const PERMS=[['opd','OPD slip banana','OPD slip'],['tokens','Token bookings (QR) dekhna aur payment lena','Tokens'],['lab','Lab bill banana','Lab bill'],['combined','Combined bill (OPD + Lab) banana','Combined'],['report','Lab Report bharna / print karna','Lab Report'],['bills','Bills dekhna aur due lena','Bills'],['patients','Patients list dekhna','Patients'],['qr','QR poster print karna','QR poster']];
+const PRESET={admin:PERMS.map(p=>p[0]),opd:['opd','tokens','bills','patients','qr'],lab:['lab','report','bills','patients'],doctor:['bills','patients']};
+const perms=()=>ME?(ME.perms||PRESET[myRole()]||[]):[];
+const can=p=>!!ME&&(myRole()==='admin'||perms().includes(p));
+const allowedTypes=()=>['OPD','LAB','COMBINED'].filter(t=>can(t==='OPD'?'opd':t==='LAB'?'lab':'combined'));
+const defType=()=>allowedTypes()[0]||'OPD';
+function navItems(){const r=myRole(),a=[['dashboard','Dashboard']],t=allowedTypes();
+ if(t.length)a.push(['billing',t.length===1?(t[0]==='OPD'?'New OPD Slip':t[0]==='LAB'?'New Lab Bill':'New Bill'):'New Bill']);
+ if(can('tokens'))a.push(['tokens','Token Bookings']);
+ if(can('report'))a.push(['labreports','Lab Reports']);
+ if(can('bills'))a.push(['bills',r==='doctor'?'My Bills':'Bills']);
+ if(can('patients'))a.push(['patients','Patients']);
+ if(r==='admin')a.push(['doctors','Doctors'],['tests','Tests & Rates'],['signers','Report Signers'],['reports','Reports'],['users','Users']);
+ if(can('qr'))a.push(['qr','QR Poster']);
+ if(r==='admin')a.push(['settings','Settings'],['backup','Backup & Sync'],['audit','Audit Log']);
+ a.push(['help','Help']);return a}
+function userPreset(role){$('u_docw').style.display=role==='doctor'?'block':'none';const pr=PRESET[role]||[];document.querySelectorAll('.u_perm').forEach(c=>{c.checked=pr.includes(c.value)})}
+const permText=u=>rl(u)==='admin'?'Everything':(u.perms||PRESET[rl(u)]||[]).map(k=>(PERMS.find(p=>p[0]===k)||[0,0,k])[2]).join(', ')||'Dashboard only';
+
+/* ---------- shared (all computers) settings ---------- */
+const SHARED=['clinicName','sub','addr','recPhones','email','slipAddr','slipPhones','paper','logo','slipNotice','slipFooter','tokNotice','billPrefix','pidFmt','repHeader','repFooter','repMachine','repNB','repBar'];
+function saveShared(){const o={id:'shared'};SHARED.forEach(k=>{o[k]=S[k]});put('config',o)}
+function applyShared(){const c=D.config.find(x=>x.id==='shared');if(c){SHARED.forEach(k=>{if(c[k]!==undefined)S[k]=c[k]});saveSettings()}}
+function fmtPid(n){return String(S.pidFmt||'P{d}-{n5}').replace('{d}',S.dev).replace('{n5}',pad(n,5)).replace('{n}',n)}
+
+/* ---------- images ---------- */
+function imgFile(file,maxW,maxH,type,key,cb){const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,maxW/im.width,maxH/im.height),w=Math.max(1,Math.round(im.width*k)),h=Math.max(1,Math.round(im.height*k));const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');if(type==='jpeg'){x.fillStyle='#fff';x.fillRect(0,0,w,h)}x.drawImage(im,0,0,w,h);
+ if(key){const d=x.getImageData(0,0,w,h),p=d.data;for(let i=0;i<p.length;i+=4){const l=(p[i]+p[i+1]+p[i+2])/3;if(l>225)p[i+3]=0;else if(l>170)p[i+3]=Math.round(255*(225-l)/55)}x.putImageData(d,0,0)}
+ cb(c.toDataURL(type==='jpeg'?'image/jpeg':'image/png',.85))};im.src=r.result};r.readAsDataURL(file)}
+function repImgUp(inp,key){const f=inp.files[0];if(!f)return;imgFile(f,1400,key==='repHeader'?320:260,'jpeg',false,d=>{S[key]=d;saveSettings();saveShared();toast('Image saved.');views.settings()})}
+function repImgClear(key){S[key]='';saveSettings();saveShared();views.settings()}
+
+/* ---------- report templates (standard parameters; editable per test by Admin) ---------- */
+const R_=(n,u,r,sp,me)=>({n,u:u||'',r:r||'',sp:sp||'',me:me||''});
+const BC='BIO-CHEMISTRY',HM='HAEMATOLOGY',SR='SEROLOGY',IM='IMMUNOLOGY / HORMONE',CP='CLINICAL PATHOLOGY';
+const rHb=R_('Haemoglobin (Hb)','g/dl','M:13.0 - 17.0|F:12.0 - 15.0','Blood (EDTA)','Cyanmethaemoglobin / Automated'),rTC=R_('Total WBC Count (TC)','/cumm','4000 - 11000'),
+ rDC=[R_('Neutrophil','%','40 - 75'),R_('Lymphocyte','%','20 - 45'),R_('Eosinophil','%','1 - 6'),R_('Monocyte','%','2 - 10'),R_('Basophil','%','0 - 1')],
+ rESR=R_('ESR (Westergren)','mm/1st hr','M:0 - 15|F:0 - 20'),rPLT=R_('Platelet Count','lakh/cumm','1.5 - 4.5'),
+ rRBC=R_('RBC Count','million/cumm','M:4.5 - 5.5|F:3.8 - 4.8'),rPCV=R_('PCV (Haematocrit)','%','M:40 - 50|F:36 - 46'),
+ rIND=[R_('MCV','fl','83 - 101'),R_('MCH','pg','27 - 32'),R_('MCHC','g/dl','31.5 - 34.5')],
+ rGLU=(n,r)=>R_(n,'mg/dl',r,'Plasma','GOD-POD'),rSER=(n,u,r,me)=>R_(n,u,r,'Serum',me||''),rNEG=(n,r)=>R_(n,'',r||'Negative'),
+ rBIL=[rSER('Serum Bilirubin (Total)','mg/dl','0.3 - 1.2','Diazo'),rSER('Serum Bilirubin (Direct)','mg/dl','0.0 - 0.3','Diazo'),rSER('Serum Bilirubin (Indirect)','mg/dl','0.2 - 0.9','Calculated')],
+ rLIP=[rSER('Serum Cholesterol (Total)','mg/dl','< 200','Enzymatic Colorimetric Method, End Point'),rSER('Serum Triglycerides','mg/dl','< 150','Enzymatic Colorimetric Method, End Point'),rSER('Serum HDL Cholesterol','mg/dl','M:> 40|F:> 50','Direct Enzymatic Method, End Point'),rSER('Serum LDL Cholesterol','mg/dl','85 - 130'),rSER('Serum VLDL Cholesterol','mg/dl','5 - 40')];
+const RPTDEF=[
+ [['BSF','SUGAR FASTING'],BC,[rGLU('Glucose (Fasting) BSF','70 - 110')]],
+ [['BSPP','SUGAR PP (2 HOURS AFTER FULL MEAL)'],BC,[rGLU('Glucose (Post Prandial) PP','70 - 140')]],
+ [['BSR'],BC,[rGLU('Glucose (Random) RBS','70 - 140')]],
+ [['CHOLES TOTAL'],BC,[rLIP[0]]],[['TRIGLYCERIDES'],BC,[rLIP[1]]],[['HDL CHOLESTEROL'],BC,[rLIP[2]]],[['LDL'],BC,[rLIP[3]]],[['VLDL'],BC,[rLIP[4]]],
+ [['LIPID PROFILE'],BC,rLIP.concat([R_('LDL / HDL Ratio','','0.5 - 3.0','','Calculated')]),'Lipid values as recommended by National Cholesterol Education Programme.'],
+ [['TOTAL BILIRUBIN'],BC,[rBIL[0]]],[['DIRECT BILIRUBIN'],BC,[rBIL[1]]],[['INDIRECT BILIRUBIN'],BC,[rBIL[2]]],[['BILIRUBIN'],BC,rBIL],
+ [['SGOT/ AST'],BC,[rSER('SGOT / AST','U/L','5 - 40')]],[['SGPT/ALT'],BC,[rSER('SGPT / ALT','U/L','5 - 40')]],
+ [['ALKALINE PHOSPHATASE (ALP)'],BC,[rSER('Alkaline Phosphatase (ALP)','U/L','40 - 130')]],
+ [['TOTAL PROTEIN'],BC,[rSER('Total Protein','g/dl','6.4 - 8.3')]],[['ALBUMIN'],BC,[rSER('Albumin','g/dl','3.5 - 5.2')]],[['GLOBULIN'],BC,[rSER('Globulin','g/dl','2.0 - 3.5')]],
+ [['LFT'],BC,rBIL.concat([rSER('SGOT / AST','U/L','5 - 40'),rSER('SGPT / ALT','U/L','5 - 40'),rSER('Alkaline Phosphatase (ALP)','U/L','40 - 130'),rSER('Total Protein','g/dl','6.4 - 8.3'),rSER('Albumin','g/dl','3.5 - 5.2'),rSER('Globulin','g/dl','2.0 - 3.5'),R_('A / G Ratio','','1.0 - 2.0','','Calculated')])],
+ [['UREA'],BC,[rSER('Blood Urea','mg/dl','15 - 45')]],[['CREATININE'],BC,[rSER('Serum Creatinine','mg/dl','M:0.7 - 1.3|F:0.6 - 1.1')]],
+ [['URIC ACID'],BC,[rSER('Serum Uric Acid','mg/dl','M:3.4 - 7.0|F:2.4 - 5.7')]],[['CA+(CALCIUM)'],BC,[rSER('Serum Calcium','mg/dl','8.6 - 10.2')]],
+ [['CHLORIDE'],BC,[rSER('Serum Chloride','mmol/L','98 - 107')]],[['K+(POTASSIUM)'],BC,[rSER('Serum Potassium (K+)','mmol/L','3.5 - 5.1')]],[['NA+(SODIUM)'],BC,[rSER('Serum Sodium (Na+)','mmol/L','135 - 145')]],
+ [['NA+ AND K+'],BC,[rSER('Serum Sodium (Na+)','mmol/L','135 - 145'),rSER('Serum Potassium (K+)','mmol/L','3.5 - 5.1')]],[['MG+(MAGNESIUM)'],BC,[rSER('Serum Magnesium','mg/dl','1.7 - 2.2')]],
+ [['AMYLASE'],BC,[rSER('Serum Amylase','U/L','28 - 100')]],[['LIPASE'],BC,[rSER('Serum Lipase','U/L','13 - 60')]],
+ [['HBA1C'],BC,[R_('Glycosylated Haemoglobin (HbA1c)','%','< 5.7','Blood (EDTA)','HPLC / Immunoturbidimetry')],'HbA1c: below 5.7 % normal; 5.7 - 6.4 % pre-diabetes; 6.5 % and above diabetes (as per ADA).'],
+ [['HB'],HM,[rHb]],[['TC(WBC)'],HM,[rTC]],[['DC'],HM,rDC],[['TC.DC'],HM,[rTC].concat(rDC)],[['HB.TC.DC'],HM,[rHb,rTC].concat(rDC)],
+ [['HB.TC.DC.ESR'],HM,[rHb,rTC].concat(rDC,[rESR])],[['TC.DC.ESR'],HM,[rTC].concat(rDC,[rESR])],[['ESR'],HM,[rESR]],
+ [['PCV'],HM,[rPCV]],[['RBC'],HM,[rRBC]],[['PLATELETS COUNT'],HM,[rPLT]],
+ [['CBC','COMPLETE HAEMOGRAM'],HM,[rHb,rTC].concat(rDC,[rRBC,rPCV],rIND,[rPLT])],
+ [['RETICULOCYTE COUNT'],HM,[R_('Reticulocyte Count','%','0.5 - 2.5')]],
+ [['BLOOD GROUP'],HM,[R_('ABO Group','',''),R_('Rh Factor','','')]],
+ [['MP'],HM,[R_('Malaria Parasite (MP)','','Not seen')]],[['MP ANTIGEN'],SR,[rNEG('Malaria Antigen (P.f / P.v)')]],
+ [['APTT'],HM,[R_('APTT','sec','25 - 35')]],[['P. TIME'],HM,[R_('Prothrombin Time (Patient)','sec','11 - 16'),R_('Control','sec',''),R_('INR','','0.8 - 1.2')]],
+ [['BTCT'],HM,[R_('Bleeding Time','min','2 - 7'),R_('Clotting Time','min','4 - 9')]],
+ [['WIDAL SLIDE','WIDAL'],SR,[R_('S. Typhi (O)','','< 1:80'),R_('S. Typhi (H)','','< 1:80'),R_('S. Paratyphi (AH)','','< 1:80'),R_('S. Paratyphi (BH)','','< 1:80')],'Widal test: a rising titre in paired samples is more significant than a single reading.'],
+ [['TYPHI DOT'],SR,[rNEG('Typhi Dot IgM'),rNEG('Typhi Dot IgG')]],
+ [['HIV I & II'],SR,[rNEG('HIV I & II Antibody (Rapid)','Non-Reactive')]],[['HBSAG'],SR,[rNEG('HBsAg (Rapid)')]],[['HCV'],SR,[rNEG('Anti HCV Antibody (Rapid)','Non-Reactive')]],
+ [['VDRL'],SR,[rNEG('VDRL','Non-Reactive')]],[['DENGUE NS1','DENGUE NS1 ELISA'],SR,[rNEG('Dengue NS1 Antigen')]],[['DENGUE IGM'],SR,[rNEG('Dengue IgM')]],
+ [['DENGUE IGG & IGM'],SR,[rNEG('Dengue IgG'),rNEG('Dengue IgM')]],[['ASO SLIDE'],SR,[rNEG('ASO (Slide)')]],[['RA SLIDE','RA FACTOR'],SR,[rNEG('RA Factor')]],
+ [['CRP(QUANT)'],SR,[R_('C-Reactive Protein (CRP)','mg/L','< 6')]],[['PREGNANCY'],SR,[rNEG('Urine Pregnancy Test (UPT)')]],
+ [['TSH','TSH MEDICITY'],IM,[R_('Thyroid Stimulating Hormone (TSH)','\u00b5IU/ml','0.35 - 5.50','Serum','CLIA / ELISA')]],
+ [['T3'],IM,[R_('Total T3','ng/ml','0.8 - 2.0','Serum')]],[['T4'],IM,[R_('Total T4','\u00b5g/dl','5.1 - 14.1','Serum')]],
+ [['FREE T3'],IM,[R_('Free T3 (FT3)','pg/ml','2.3 - 4.2','Serum')]],[['FREE T4'],IM,[R_('Free T4 (FT4)','ng/dl','0.8 - 1.8','Serum')]],
+ [['VITAMIN B12'],IM,[R_('Vitamin B12','pg/ml','211 - 911','Serum')]],[['VITAMIN D 25','VITAMIN D3'],IM,[R_('Vitamin D (25-OH)','ng/ml','30 - 100','Serum')]],
+ [['PSA'],IM,[R_('Total PSA','ng/ml','0 - 4.0','Serum')]],
+ [['URINE RE/ME'],CP,[R_('Colour','','Pale yellow'),R_('Appearance','','Clear'),R_('Reaction (pH)','','4.6 - 8.0'),R_('Specific Gravity','','1.005 - 1.030'),R_('Albumin','','Nil'),R_('Sugar','','Nil'),R_('Ketone Bodies','','Nil'),R_('Bile Salt / Pigment','','Absent'),R_('Pus Cells','/hpf','0 - 5'),R_('RBC','/hpf','Nil'),R_('Epithelial Cells','/hpf','0 - 5'),R_('Casts','','Nil'),R_('Crystals','','Nil'),R_('Others','','')]],
+ [['URINE SUGAR'],CP,[R_('Urine Sugar','','Nil')]],[['URINE ALBUMIN'],CP,[R_('Urine Albumin','','Nil')]],[['STOOL OBT'],CP,[R_('Occult Blood','','Negative')]]
+];
+const RPTMAP={};RPTDEF.forEach(d=>d[0].forEach(n=>{RPTMAP[n.toUpperCase()]={dept:d[1],rows:d[2],note:d[3]||''}}));
+function guessDept(n){n=n.toUpperCase();return /HIV|HBS|HCV|VDRL|WIDAL|DENGUE|IGM|IGG|TYPHI|ASO|^RA |CRP|RK-39|MANTOU/.test(n)?SR:/TSH|T3|T4|PROLACTIN|FSH|^LH|VITAMIN|PSA|AMH|HCG|CA-|AFP|INSULIN|TESTOST|PTH|FERIT|IGE/.test(n)?IM:/URINE|STOOL|SYNOVIAL/.test(n)?CP:/BIOPSY/.test(n)?'HISTOPATHOLOGY':'PATHOLOGY'}
+function tplFor(testId,name){const t=D.tests.find(x=>x.id===testId);if(t&&t.rep&&t.rep.rows&&t.rep.rows.length)return t.rep;return RPTMAP[String(name).trim().toUpperCase()]||{dept:guessDept(name),rows:[R_(name,'','')],note:''}}
+function rngResolve(r,sex){if(!r)return'';const m=String(r).match(/^M:(.*)\|F:(.*)$/);if(m)return(/^f/i.test(sex||'')?m[2]:m[1]).trim();return String(r)}
+function rngParse(s){s=String(s||'').replace(/,/g,'');let m;if(/:/.test(s))return null;
+ if((m=s.match(/^\s*<\s*=?\s*([\d.]+)/)))return{hi:+m[1]};if((m=s.match(/^\s*>\s*=?\s*([\d.]+)/)))return{lo:+m[1]};
+ if((m=s.match(/^\s*\(?\s*([\d.]+)\s*(?:-|\u2013|to)\s*([\d.]+)/)))return{lo:+m[1],hi:+m[2]};return null}
+function flagOf(v,range){v=String(v==null?'':v).trim();const x=parseFloat(v.replace(/,/g,''));if(!isFinite(x)||!/^[\d.,]+$/.test(v))return'';const p=rngParse(range);if(!p)return'';
+ if(p.lo!==undefined&&p.hi!==undefined)return x<p.lo?'L':x>p.hi?'H':'';if(p.hi!==undefined)return x>=p.hi?'H':'';if(p.lo!==undefined)return x<=p.lo?'L':'';return''}
+
+/* ---------- report signers (doctor / technician signatures) ---------- */
+let SGIMG='';
+views.signers=function(){
+ const a=D.signers.slice().sort((x,y)=>(x.kind||'').localeCompare(y.kind||'')||x.name.localeCompare(y.name));
+ $('view').innerHTML=`<div class="card"><div class="row" style="justify-content:space-between"><div class="muted">Doctors / lab technicians whose name and signature are printed on lab reports. A new doctor can be added here at any time.</div><button class="btn g" onclick="signerForm()">+ Add signer</button></div></div>
+ <div class="card tw">${a.length?`<table><tr><th>Name</th><th>Role</th><th>Qualification / Reg. no.</th><th>Signature</th><th>Status</th><th></th></tr>${a.map(s=>`<tr class="${s.active===false?'del':''}"><td><b>${esc(s.name)}</b></td><td>${s.kind==='pathologist'?'Doctor / Pathologist':'Lab Technician'}</td><td>${esc(s.deg||'')}<br><span class="muted">${esc(s.reg||'')}</span></td><td>${s.sig?`<img src="${s.sig}" style="height:34px;background:#fff;border:1px solid var(--ln)">`:'<span class="muted">not added</span>'}</td><td>${s.active===false?'Inactive':'Active'}</td><td><button class="btn s" onclick="signerForm('${s.id}')">Edit</button></td></tr>`).join('')}</table>`:'<div class="em">No signers yet. Add the pathologist doctor and the lab technician.</div>'}</div>`;
+};
+function signerForm(id){const s=id?D.signers.find(x=>x.id===id):{name:'',kind:'pathologist',deg:'',reg:'',sig:'',active:true};SGIMG=s.sig||'';
+ modal(`<h2>${id?'Edit signer':'Add signer'}</h2><div class="g2" style="grid-template-columns:1fr">
+ <label class="f">Name (as printed, e.g. DR. S. KUMAR)<input id="sg_name" value="${esc(s.name)}"></label>
+ <label class="f">Role<select id="sg_kind"><option value="pathologist"${s.kind==='pathologist'?' selected':''}>Doctor / Pathologist (right side)</option><option value="technician"${s.kind==='technician'?' selected':''}>Lab Technician — Checked By (left side)</option></select></label>
+ <label class="f">Qualification line (e.g. MD PATHOLOGY / LAB TECHNICIAN (B.M.L.T.))<input id="sg_deg" value="${esc(s.deg||'')}"></label>
+ <label class="f">Registration no. (optional)<input id="sg_reg" value="${esc(s.reg||'')}" placeholder="Reg. No. WBMC - 00000"></label>
+ <label class="f">Signature image (photo of signature on white paper)<input type="file" accept="image/*" onchange="sigUp(this)"></label>
+ <div><div class="muted" style="font-size:12px">Preview</div><img id="sg_prev" src="${s.sig||''}" style="height:60px;background:#fff;border:1px solid var(--ln);${s.sig?'':'display:none'}"> ${s.sig?'<a href="#" onclick="SGIMG=\'\';$(\'sg_prev\').style.display=\'none\';return false">remove</a>':''}</div>
+ <label><input type="checkbox" id="sg_act" ${s.active===false?'':'checked'}>Active</label></div>
+ <div class="mfoot"><button class="btn l" onclick="closeModal()">Cancel</button><button class="btn g" onclick="signerSave('${id||''}')">Save signer</button></div>`)}
+function sigUp(inp){const f=inp.files[0];if(!f)return;imgFile(f,480,180,'png',true,d=>{SGIMG=d;const p=$('sg_prev');p.src=d;p.style.display='inline-block'})}
+function signerSave(id){const name=$('sg_name').value.trim();if(!name)return toast('Enter the name.',true);
+ const old=id?D.signers.find(x=>x.id===id):{};put('signers',Object.assign({id:id||'sg'+uid()},old,{name,kind:$('sg_kind').value,deg:$('sg_deg').value.trim(),reg:$('sg_reg').value.trim(),sig:SGIMG,active:$('sg_act').checked}));
+ log(id?'Edit signer':'Add signer',name,'');closeModal();views.signers()}
+
+/* ---------- lab reports list ---------- */
+let LRF={from:'',to:'',st:'',q:''};
+const labItems=b=>(b.items||[]).filter(i=>cat(i.n)==='Pathology');
+const repOf=id=>D.reports.find(r=>r.billId===id&&r._del!==true);
+views.labreports=function(){
+ if(!LRF.from){LRF.from=ymd();LRF.to=ymd()}
+ $('view').innerHTML=`<div class="card"><div class="row"><label class="f">From<input type="date" value="${LRF.from}" onchange="LRF.from=this.value;drawLR()"></label><label class="f">To<input type="date" value="${LRF.to}" onchange="LRF.to=this.value;drawLR()"></label>
+ <label class="f">Status<select onchange="LRF.st=this.value;drawLR()">${[['','All'],['pending','Pending'],['draft','Draft'],['final','Final (ready)']].map(x=>`<option value="${x[0]}"${LRF.st===x[0]?' selected':''}>${x[1]}</option>`).join('')}</select></label>
+ <label class="f" style="flex:1;min-width:180px">Search<input value="${esc(LRF.q)}" placeholder="Name, phone, bill no." oninput="LRF.q=this.value;drawLR()"></label>
+ <button class="btn l s" onclick="LRF={from:ymd(),to:ymd(),st:'',q:''};views.labreports()">Today</button><button class="btn o s" onclick="LRF={from:'2000-01-01',to:'2999-12-31',st:'pending',q:''};views.labreports()">All pending</button></div></div><div class="card"><div id="lrtable"></div></div>`;drawLR()};
+function drawLR(){const q=LRF.q.trim().toLowerCase();
+ const a=myBills().filter(b=>labItems(b).length&&b.billDate>=LRF.from&&b.billDate<=LRF.to&&(!q||(b.name+' '+(b.phone||'')+' '+b.no).toLowerCase().includes(q))).map(b=>({b,r:repOf(b.id)})).filter(x=>!LRF.st||(x.r?x.r.status:'pending')===LRF.st).sort((x,y)=>y.b.ts-x.b.ts);
+ const el=$('lrtable');if(!el)return;
+ el.innerHTML=a.length?`<div class="tw"><table><tr><th>Bill No.</th><th>Date</th><th>Patient</th><th>Tests</th><th>Report</th><th></th></tr>${a.slice(0,300).map(({b,r})=>{const st=r?r.status:'pending';return`<tr><td>${esc(b.no)}</td><td>${fd(b.billDate)}</td><td>${esc(b.title)} ${esc(b.name)}<br><span class="muted">${esc(ageTxt(b.age))} ${esc(b.sex||'')}</span></td><td>${esc(labItems(b).map(i=>i.n).join(', '))}</td><td>${st==='final'?'<span class="tag opd">Ready</span>':st==='draft'?'<span class="tag cmb">Draft</span>':'<span class="tag">Pending</span>'}</td>
+ <td style="white-space:nowrap"><button class="btn ${st==='final'?'l':'g'} s" onclick="repEdit('${b.id}')">${st==='final'?'View / Edit':'Enter results'}</button>${st==='final'?` <button class="btn s" onclick="repPrint('${b.id}')">Print</button> <button class="btn s" style="background:#1da851" onclick="waReport('${b.id}')">WhatsApp</button>`:''}</td></tr>`}).join('')}</table></div>`:'<div class="em">No lab bills for these filters.</div>';
+}
+
+/* ---------- report entry ---------- */
+let RP=null;
+function buildReport(b){const old=repOf(b.id);
+ const secs=labItems(b).map(it=>{const prev=old&&old.sections.find(s=>s.testId===it.tid);if(prev)return JSON.parse(JSON.stringify(prev));const tp=tplFor(it.tid,it.n);
+  return{testId:it.tid,testName:it.n,dept:tp.dept,note:tp.note||'',rows:tp.rows.map(x=>({n:x.n,u:x.u||'',r:rngResolve(x.r,b.sex),sp:x.sp||'',me:x.me||'',v:''}))}});
+ if(old)return Object.assign(JSON.parse(JSON.stringify(old)),{sections:secs});
+ return{id:'rp-'+b.id,billId:b.id,billNo:b.no,pid:b.pid,pno:b.pno,title:b.title,name:b.name,age:b.age,sex:b.sex,phone:b.phone,refBy:b.doctorId?b.doctorName+(b.doctorDeg?', '+b.doctorDeg:''):'SELF',regDate:b.billDate,collDate:b.billDate,reportDate:ymd(),machine:S.repMachine||'',pathId:M.lastPath||'',techId:M.lastTech||'',status:'draft',sections:secs}}
+function repEdit(billId){const b=D.bills.find(x=>x.id===billId);if(!b||!can('report'))return;RP=buildReport(b);page='repedit';render();window.scrollTo(0,0)}
+function secHTML(s,si){return `<div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">${esc(s.testName)}</h2><label class="f" style="min-width:240px">Department<input value="${esc(s.dept)}" oninput="RP.sections[${si}].dept=this.value"></label></div>
+ <div class="tw"><table><tr><th>Parameter</th><th style="width:150px">Result</th><th style="width:100px">Unit</th><th style="width:210px">Normal range</th><th></th></tr>
+ ${s.rows.map((r,ri)=>`<tr><td><input value="${esc(r.n)}" oninput="RP.sections[${si}].rows[${ri}].n=this.value"><div class="row" style="gap:6px;margin-top:3px;flex-wrap:nowrap"><input placeholder="Specimen" style="font-size:12px;padding:4px 6px" value="${esc(r.sp)}" oninput="RP.sections[${si}].rows[${ri}].sp=this.value"><input placeholder="Method" style="font-size:12px;padding:4px 6px" value="${esc(r.me)}" oninput="RP.sections[${si}].rows[${ri}].me=this.value"></div></td>
+ <td><input value="${esc(r.v)}" style="font-weight:700" oninput="rpRes(${si},${ri},this.value)"></td><td><input value="${esc(r.u)}" oninput="RP.sections[${si}].rows[${ri}].u=this.value;rpRes(${si},${ri})"></td><td><input value="${esc(r.r)}" oninput="RP.sections[${si}].rows[${ri}].r=this.value;rpRes(${si},${ri})"></td>
+ <td style="white-space:nowrap"><b id="fl_${si}_${ri}" class="due">${flagOf(r.v,r.r)}</b> <button class="btn l s" title="Remove row" onclick="rpDel(${si},${ri})">\u2715</button></td></tr>`).join('')}</table></div>
+ <div class="row" style="margin-top:8px"><button class="btn l s" onclick="rpAdd(${si})">+ Add row</button>${isAdmin()?`<button class="btn l s" onclick="rpTpl(${si})">Save this layout as default for this test</button>`:''}</div>
+ <label class="f" style="margin-top:8px">Note (printed under this test, optional)<textarea rows="2" oninput="RP.sections[${si}].note=this.value">${esc(s.note)}</textarea></label></div>`}
+function rpRes(si,ri,v){const r=RP.sections[si].rows[ri];if(v!==undefined)r.v=v;const f=$('fl_'+si+'_'+ri);if(f)f.textContent=flagOf(r.v,r.r)}
+function rpAdd(si){RP.sections[si].rows.push({n:'',u:'',r:'',sp:'',me:'',v:''});rpKeep()}
+function rpDel(si,ri){RP.sections[si].rows.splice(ri,1);rpKeep()}
+function rpKeep(){const y=window.scrollY;views.repedit();window.scrollTo(0,y)}
+function rpTpl(si){const s=RP.sections[si],t=D.tests.find(x=>x.id===s.testId);if(!t)return toast('Test not found.',true);
+ put('tests',Object.assign({},t,{rep:{dept:s.dept,note:s.note,rows:s.rows.map(r=>({n:r.n,u:r.u,r:r.r,sp:r.sp,me:r.me}))}}));log('Report layout saved',t.name,'');toast('Saved. This layout is used for new reports of '+t.name+'.')}
+views.repedit=function(){
+ if(!RP){nav('labreports');return}
+ const sg=D.signers.filter(s=>s.active!==false),sel=(kind,key)=>`<select onchange="RP.${key}=this.value"><option value="">\u2014 none \u2014</option>${sg.filter(s=>s.kind===kind).map(s=>`<option value="${s.id}"${RP[key]===s.id?' selected':''}>${esc(s.name)}</option>`).join('')}</select>`;
+ $('view').innerHTML=`<div class="card"><div class="row" style="justify-content:space-between"><div><b style="font-size:16px">${esc(RP.title)} ${esc(RP.name)}</b> \u00b7 ${esc(ageTxt(RP.age))} ${esc(RP.sex)} \u00b7 ${esc(RP.pno)} \u00b7 Bill ${esc(RP.billNo)}<div class="muted">Referred by: <input style="width:320px;display:inline-block;padding:3px 6px" value="${esc(RP.refBy)}" oninput="RP.refBy=this.value"></div></div>
+ <div class="row"><label class="f">Collection date<input type="date" value="${RP.collDate}" onchange="RP.collDate=this.value"></label><label class="f">Report date<input type="date" value="${RP.reportDate}" onchange="RP.reportDate=this.value"></label></div></div></div>
+ ${RP.sections.map(secHTML).join('')}
+ <div class="card"><div class="g2"><label class="f">Doctor / Pathologist (signs the report)${sel('pathologist','pathId')}</label><label class="f">Lab technician (Checked By)${sel('technician','techId')}</label><label class="f" style="grid-column:span 2">Test done by (machine / method line)<input value="${esc(RP.machine)}" oninput="RP.machine=this.value" placeholder="e.g. SEMI AUTO ANALYZER"></label></div>
+ ${sg.length?'':'<div class="banner" style="margin-top:10px"><span>No signer added yet. Admin can add the doctor and technician in <b>Report Signers</b>.</span></div>'}
+ <div class="mfoot" style="justify-content:flex-start"><button class="btn g" onclick="rpSave(true)">Finalize &amp; Print</button><button class="btn" onclick="rpSave(false)">Save draft</button><button class="btn l" onclick="rpPreview()">Preview</button><button class="btn l" onclick="nav('labreports')">Back</button></div></div>`};
+function rpSave(final){
+ const filled=RP.sections.some(s=>s.rows.some(r=>String(r.v).trim()));
+ if(final&&!filled)return toast('Enter at least one result.',true);
+ if(final&&!RP.pathId&&!confirm('No doctor is selected to sign. Print without a doctor signature?'))return;
+ RP.status=final?'final':'draft';if(final){RP.finalBy=ME.name}RP.createdBy=RP.createdBy||ME.name;
+ M.lastPath=RP.pathId;M.lastTech=RP.techId;saveMeta();
+ put('reports',JSON.parse(JSON.stringify(RP)));log(final?'Report finalized':'Report draft saved',RP.billNo,RP.name);
+ toast(final?'Report saved.':'Draft saved.');
+ if(final){printHTML(reportHTML(RP),'report');setTimeout(()=>nav('labreports'),400)}
+}
+function rpPreview(){modal(`<h2>Preview</h2><div style="border:1px solid var(--ln);overflow:auto;padding:6px;background:#fff">${reportHTML(RP,true)}</div><div class="mfoot"><button class="btn l" onclick="closeModal()">Close</button></div>`,true)}
+function repPrint(billId){const r=repOf(billId);if(r)printHTML(reportHTML(r),'report')}
+function waReport(billId){const r=repOf(billId),b=D.bills.find(x=>x.id===billId);if(!r||!b)return;
+ const L=['*'+S.clinicName+' '+S.sub+'*','LAB REPORT','Patient: '+r.title+' '+r.name+' ('+ageTxt(r.age)+', '+r.sex+')','Bill No: '+r.billNo,'Date: '+fd(r.reportDate),''];
+ r.sections.forEach(s=>{L.push('*'+s.testName+'*');s.rows.forEach(x=>{if(String(x.v).trim()){const f=flagOf(x.v,x.r);L.push(x.n+': '+x.v+(x.u?' '+x.u:'')+(f?' ('+f+')':'')+(x.r?'  [Normal: '+x.r+']':''))}});L.push('')});
+ const p=D.signers.find(s=>s.id===r.pathId);if(p)L.push('Reported by: '+p.name+(p.deg?', '+p.deg:''));L.push('Contact: '+S.recPhones);waOpen(b.phone,L)}
+
+/* ---------- printed report ---------- */
+function reportHTML(r,prev){
+ const p=D.signers.find(s=>s.id===r.pathId),t=D.signers.find(s=>s.id===r.techId),ac=S.accent||'#1456a0',bar=S.barColor||'#1565c0';
+ const head=S.repHeader?`<img src="${S.repHeader}" style="width:100%;display:block;margin-bottom:6px">`:`<div style="display:flex;gap:10px;align-items:center;margin-bottom:6px"><div style="width:70px;height:70px;flex:none">${logoHTML()}</div><div><div style="font-size:30px;font-weight:800;color:${ac};line-height:1.05">${esc(S.clinicName)} <span style="font-size:16px;font-weight:600;color:#444">${esc(S.sub)}</span></div><div style="font-size:11.5px">${esc(S.addr)}</div></div></div>`;
+ const box=`<div class="rp-box"><table><tr><td class="k">Patient Name</td><td>${esc(r.title)} ${esc(String(r.name).toUpperCase())}</td><td class="k">Patient ID</td><td>${esc(r.pno)}</td></tr>
+ <tr><td class="k">Patient Age</td><td>${esc(ageTxt(r.age))}</td><td class="k">Gender</td><td>${esc(String(r.sex||'').toUpperCase())}</td></tr>
+ <tr><td class="k">Referring By</td><td colspan="3">${esc(r.refBy)}</td></tr>
+ <tr><td class="k">Reg. Date</td><td>${fd(r.regDate)}</td><td class="k">Collection Date</td><td>${fd(r.collDate)}</td></tr>
+ <tr><td class="k">Date Of Report</td><td>${fd(r.reportDate)}</td><td colspan="2" style="text-align:right">${barcode(r.billNo)}<div style="font-size:10px;text-align:right">${esc(r.billNo)}</div></td></tr></table></div>`;
+ let lastDept=null,secs='';
+ r.sections.forEach(s=>{const rows=s.rows.filter(x=>String(x.v).trim());if(!rows.length)return;const dp=String(s.dept).toUpperCase();
+  if(dp!==lastDept){if(lastDept!==null)secs+='</tbody></table></div>';secs+=`<div class="rp-sec"><div class="rp-dept">DEPARTMENT OF ${esc(dp)}</div><table class="rp-t"><thead><tr><th style="width:40%">TEST NAME</th><th style="width:16%">RESULT</th><th style="width:12%">UNIT</th><th>NORMAL RANGE</th></tr></thead><tbody>`;lastDept=dp}
+  rows.forEach(x=>{const f=flagOf(x.v,x.r);secs+=`<tr><td><div class="n">${esc(x.n)}</div>${x.sp?`<div class="s">Specimen : ${esc(x.sp)}</div>`:''}${x.me?`<div class="s">Method : ${esc(x.me)}</div>`:''}</td><td><b>${esc(x.v)}</b>${f?` <b>${f}</b>`:''}</td><td>${esc(x.u)}</td><td style="white-space:pre-line">${esc(x.r)}</td></tr>`});
+  if(s.note)secs+=`<tr><td colspan="4" class="rp-note">NOTE:- ${esc(s.note)}</td></tr>`});
+ if(lastDept!==null)secs+='</tbody></table></div>';
+ const sig=(x,lbl)=>x?`<div class="rp-sig">${x.sig?`<img src="${x.sig}">`:'<div style="height:44px"></div>'}${lbl?`<div>${lbl}</div>`:''}<div style="font-weight:700">${esc(x.name)}</div>${x.deg?`<div>${esc(x.deg)}</div>`:''}${x.reg?`<div>${esc(x.reg)}</div>`:''}</div>`:'<div class="rp-sig"></div>';
+ const foot=S.repFooter?`<img src="${S.repFooter}" style="width:100%;display:block">`:`<div style="text-align:center"><div style="font-size:24px;font-weight:800;color:${ac}">${esc(S.clinicName+' '+S.sub)}</div><div style="font-size:12px">\ud83d\udccd ${esc(S.addr)}</div><div style="font-size:12px">\u260e ${esc(S.recPhones)}${S.email?' &nbsp; \u2709 '+esc(S.email):''}</div></div>`;
+ return `<div class="rp${prev?' prev':''}">${head}${box}${secs}
+ ${r.machine?`<div class="rp-m">TEST DONE BY &nbsp;${esc(r.machine)}</div>`:''}
+ ${S.repNB?`<div class="rp-m"><b>N.B:-</b> &nbsp;${esc(S.repNB)} &nbsp;&nbsp; ---------- <b>The end of Report</b> ----------</div>`:'<div class="rp-m" style="text-align:center">---------- The end of Report ----------</div>'}
+ <div class="rp-sigs">${sig(t,'Checked By')}${sig(p,'')}</div>
+ <div class="rp-foot">${foot}${S.repBar?`<div class="rp-bar" style="background:${bar}">${esc(S.repBar)}</div>`:''}</div></div>`}
+
+/* ---------- import rates (admin) ---------- */
+function rateImport(){modal(`<h2>Import rates</h2><p class="muted" style="margin-top:0">Paste lines like <b>CBC &nbsp; 300</b> (test name, then rate; tab, comma or space between). Copy two columns straight from Excel. Matching tests get the new rate; unknown names are added as new tests.</p><textarea id="ri_txt" rows="12" placeholder="CBC\t300\nBSF\t60\nLIPID PROFILE\t600"></textarea><div class="mfoot"><button class="btn l" onclick="closeModal()">Cancel</button><button class="btn g" onclick="rateImportGo()">Import</button></div>`,true)}
+function rateImportGo(){const lines=$('ri_txt').value.split(/\r?\n/);let upd=0,add=0,bad=0;
+ lines.forEach(l=>{l=l.trim();if(!l)return;let m=l.match(/^(.*?)[\t,;|]+\s*([\d.]+)\s*$/)||l.match(/^(.*\S)\s+([\d.]+)\s*$/);if(!m){bad++;return}
+  const name=m[1].trim().replace(/^"|"$/g,''),rate=num(m[2]);if(!name)return;const t=D.tests.find(x=>nz(x.name)===nz(name));
+  if(t){put('tests',Object.assign({},t,{rate,active:true}));upd++}else{put('tests',{id:'t'+uid(),name:name.toUpperCase(),rate,active:true});add++}});
+ log('Rates imported','',upd+' updated, '+add+' added');closeModal();toast(upd+' rates updated, '+add+' tests added'+(bad?', '+bad+' lines skipped':'')+'.');views.tests()}
+
+/* ---------- start ---------- */
+async function init(){
+ idb=await openDB();
+ try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+ for(const s of ['doctors','tests','bills','patients','users','audit','tokens','reports','signers','config'])D[s]=await idbAll(s);
+ const st=await idbAll('settings');S=Object.assign(defaultSettings(),st[0]||{});applyShared();
+ const mt=await idbAll('meta');M=Object.assign({id:'meta',counters:{},dirty:{},lastPull:0,lastBackup:0,seeded:false,lastSync:0},mt[0]||{});
+ if(M.syncV!==2){M.syncV=2;M.lastPull=0;saveMeta()}
+ if(!M.seeded&&!D.users.length)seed();else if(!M.seeded){M.seeded=true;saveMeta()}
+ if(!M.labSeeded){M.labSeeded=true;if(D.users.length&&!D.users.some(u=>u.role==='lab'))put('users',{id:'u-lab',name:'LAB',role:'lab',pin:hp('2222'),active:true});saveMeta()}
+ saveSettings();
+ let sid=null;try{sid=sessionStorage.getItem('glu')}catch(e){}
+ ME=D.users.find(u=>u.id===sid&&u.active!==false)||null;
+ window.addEventListener('online',()=>{renderStatus();syncNow()});window.addEventListener('offline',renderStatus);
+ setInterval(()=>syncNow(),location.protocol==='file:'?30000:8000);
+ render();syncNow();
+}
+init();
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('/sw.js').catch(()=>{});
+</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1456a0">
+<title>Doctor Token – AMR Health Care</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font:16px/1.5 "Nirmala UI","Noto Sans Bengali","Noto Sans","Segoe UI",Arial,sans-serif;background:#eef2f8;color:#17211c}
+header{background:linear-gradient(135deg,#1456a0,#0c3a6e);color:#fff;padding:16px;text-align:center}
+header b{display:block;font-size:20px}header span{font-size:13px;opacity:.9}
+main{max-width:480px;margin:0 auto;padding:14px}
+.card{background:#fff;border:1px solid #d5dfd9;border-radius:12px;padding:16px;margin-bottom:14px}
+h2{margin:0 0 4px;font-size:18px;color:#1456a0}p.s{margin:0 0 12px;color:#5b6a62;font-size:13.5px}
+label{display:block;font-weight:600;font-size:14px;margin-top:10px}label small{font-weight:400;color:#5b6a62}
+input,select{width:100%;padding:12px;border:1px solid #c5d2cb;border-radius:8px;font:inherit;margin-top:4px;background:#fff}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{width:100%;margin-top:16px;padding:14px;border:0;border-radius:10px;background:#1456a0;color:#fff;font:inherit;font-weight:700;font-size:17px}
+button:disabled{opacity:.6}
+.err{color:#b83227;margin-top:10px;font-weight:600;min-height:20px}
+.slip{border:3px double #1456a0;text-align:center}
+.slip .no{font-size:62px;font-weight:800;line-height:1.1;color:#1456a0}
+.slip table{width:100%;text-align:left;margin-top:8px;border-collapse:collapse}
+.slip td{padding:5px 2px;border-bottom:1px dotted #9db;vertical-align:top}
+.slip td:first-child{color:#5b6a62;width:38%}
+.st{display:inline-block;padding:4px 14px;border-radius:99px;font-weight:700;margin-top:8px}
+.st.u{background:#fbf0dd;color:#8a5200}.st.p{background:#e3edf8;color:#1456a0}.st.c{background:#eee;color:#555}
+.note{background:#1456a0;color:#fff;border-radius:8px;padding:10px;margin-top:12px;font-size:15px}
+.muted{color:#5b6a62;font-size:13px}
+</style>
+</head>
+<body>
+<header><b>AMR Health Care</b><span>Chanchal Court More, Chanchal, Malda</span></header>
+<main>
+<div id="slipBox"></div>
+<div class="card" id="formCard">
+ <h2>ডাক্তারের টোকেন বুক করুন</h2><p class="s">Book your doctor token — আজ যে ডাক্তারবাবুরা আছেন তাঁদের মধ্যে থেকে বেছে নিন।</p>
+ <label>নাম / Name *<input id="name" autocomplete="name"></label>
+ <div class="row"><label>বয়স / Age *<input id="age" inputmode="numeric" maxlength="3"></label>
+ <label>লিঙ্গ / Sex<select id="sex"><option value="Male">পুরুষ / Male</option><option value="Female">মহিলা / Female</option><option value="Other">অন্য / Other</option></select></label></div>
+ <label>মোবাইল নম্বর / Phone *<input id="phone" inputmode="numeric" maxlength="12" autocomplete="tel"></label>
+ <label>অভিভাবকের নাম / Guardian name <small>(ঐচ্ছিক)</small><input id="guardian"></label>
+ <label>ডাক্তার নির্বাচন করুন / Select doctor *<select id="doc"><option value="">লোড হচ্ছে… Loading…</option></select></label>
+ <div class="err" id="err"></div>
+ <button id="go" onclick="book()">টোকেন বুক করুন · Book Token</button>
+</div>
+<p class="muted" style="text-align:center">টাকা ক্লিনিকে এসে রিসেপশনে জমা দিতে হবে।<br>Payment is made at the clinic reception.</p>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fd=s=>{const p=String(s).split('-');return p[2]+'/'+p[1]+'/'+p[0]};
+let timer=null;
+async function loadDocs(){
+ try{
+  const r=await fetch('/api/public/doctors');const j=await r.json();const s=$('doc');
+  if(!j.doctors.length){s.innerHTML='<option value="">'+(j.loaded?'আজ কোনো ডাক্তার নেই / No doctor today':'এখন বুকিং বন্ধ / Booking not available')+'</option>';$('go').disabled=true;return}
+  s.innerHTML='<option value="">— ডাক্তার বেছে নিন —</option>'+j.doctors.map(d=>'<option value="'+esc(d.id)+'">'+esc(d.name)+' — '+esc(d.spec)+' — ₹'+esc(d.fee)+(d.timing?' ('+esc(d.timing)+')':'')+'</option>').join('');
+ }catch(e){$('doc').innerHTML='<option value="">ইন্টারনেট সমস্যা / Network problem</option>'}
+}
+async function book(){
+ const err=$('err');err.textContent='';
+ const b={name:$('name').value.trim(),age:$('age').value.trim(),sex:$('sex').value,phone:$('phone').value.trim(),guardian:$('guardian').value.trim(),doctorId:$('doc').value};
+ if(b.name.length<2||!b.age)return err.textContent='নাম ও বয়স লিখুন / Enter name and age';
+ if(!/^[6-9]\d{9}$/.test(b.phone.replace(/\D/g,'').slice(-10)))return err.textContent='সঠিক ১০ সংখ্যার মোবাইল নম্বর দিন / Enter a valid 10-digit phone';
+ if(!b.doctorId)return err.textContent='ডাক্তার বেছে নিন / Select a doctor';
+ $('go').disabled=true;
+ try{
+  const r=await fetch('/api/public/book',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});const j=await r.json();
+  if(!r.ok){err.textContent=j.error||'Error';$('go').disabled=false;return}
+  try{localStorage.setItem('gl_token',JSON.stringify({id:j.id,date:j.date}))}catch(e){}
+  showSlip(j);
+ }catch(e){err.textContent='ইন্টারনেট সমস্যা, আবার চেষ্টা করুন / Network problem';$('go').disabled=false}
+}
+function showSlip(t){
+ $('formCard').style.display='none';
+ const st=t.status==='billed'?['p','Paid ✔ — টাকা জমা হয়েছে']:t.status==='cancelled'?['c','Cancelled']:['u','Unpaid — টাকা জমা বাকি'];
+ $('slipBox').innerHTML='<div class="card slip"><div class="muted">ডিজিটাল টোকেন / Digital Token Slip</div><div class="muted">টোকেন নং</div><div class="no">'+esc(t.no)+'</div><span class="st '+st[0]+'">'+st[1]+'</span>'+
+ '<table><tr><td>নাম / Name</td><td><b>'+esc(t.name)+'</b></td></tr><tr><td>বয়স, লিঙ্গ</td><td>'+esc(t.age)+', '+esc(t.sex)+'</td></tr><tr><td>ডাক্তার / Doctor</td><td><b>'+esc(t.doctorName)+'</b><br><span class="muted">'+esc(t.doctorSpec)+'</span></td></tr><tr><td>তারিখ / Date</td><td>'+fd(t.date)+'</td></tr>'+
+ (t.approx?'<tr><td>আনুমানিক সময় / Approx Time</td><td><b>'+esc(t.approx)+'</b></td></tr>':'')+'<tr><td>ফি / Fee</td><td><b>₹ '+esc(t.fee)+'</b></td></tr></table>'+
+ '<div class="note">ক্লিনিকে এসে রিসেপশনে টোকেন নম্বর <b>'+esc(t.no)+'</b> বলুন এবং টাকা জমা দিন।<br>Tell this Token No. at the reception and pay the fee.</div>'+
+ '<p class="muted">এই পর্দার স্ক্রিনশট নিয়ে রাখুন · Keep a screenshot of this slip</p></div>';
+ clearInterval(timer);
+ if(t.status==='unpaid')timer=setInterval(async()=>{try{const r=await fetch('/api/public/token/'+t.id);if(r.ok){const n=await r.json();if(n.status!==t.status){t.status=n.status;showSlip(n)}}}catch(e){}},15000);
+}
+(async()=>{
+ await loadDocs();
+ try{const s=JSON.parse(localStorage.getItem('gl_token')||'null');
+  const d=new Date(Date.now()+330*60000).toISOString().slice(0,10);
+  if(s&&s.date===d){const r=await fetch('/api/public/token/'+s.id);if(r.ok)showSlip(await r.json())}}catch(e){}
+})();
+</script>
+</body>
+</html>
