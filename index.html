@@ -259,11 +259,12 @@ let reconciledOnce=false;
 const base=()=>(S.sbUrl||'').trim().replace(/\/+$/,'');
 const cfgOK=()=>location.protocol!=='file:'||!!base();
 const pending=()=>Object.keys(M.dirty||{}).length;
-function sbFetch(path,opt){opt=opt||{};return fetch(base()+'/api/'+path,Object.assign({},opt,{headers:Object.assign({'Content-Type':'application/json'},opt.headers||{})}))}
+const ckey=()=>(localStorage.getItem('amr_ckey')||'').trim();let keyAsked=false;function askKey(msg){keyAsked=true;const k=prompt(msg||'Enter the Clinic Key for this computer (ask the Admin). It is needed only once on each computer.','');if(k&&k.trim()){localStorage.setItem('amr_ckey',k.trim());return true}return false}function sbFetch(path,opt){opt=opt||{};return fetch(base()+'/api/'+path,Object.assign({},opt,{headers:Object.assign({'Content-Type':'application/json','X-Clinic-Key':ckey()},opt.headers||{})})).then(r=>{if(r.status===401){localStorage.removeItem('amr_ckey');keyAsked=false;throw new Error('Clinic key is wrong or missing. Reload the page and enter the correct key.')}if(r.status===503)throw new Error('Server clinic key is not set (Render > Environment > CLINIC_KEY).');return r})}async function downloadServerBackup(){try{const r=await sbFetch('export');if(!r.ok)throw new Error('Backup failed ('+r.status+')');const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AMR_Server_Backup.json';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}catch(e){toast(e.message||String(e),true)}}
 function schedSync(){if(!cfgOK())return;clearTimeout(syncTimer);syncTimer=setTimeout(()=>syncNow(),2500)}
 async function syncNow(manual){
  if(!cfgOK()){if(manual)toast('Cloud sync is not set up yet (Backup & Sync page).',true);return}
  if(!navigator.onLine){renderStatus();if(manual)toast('Internet is off. Data is safe on this computer and will sync later.',true);return}
+ if(!ckey()&&location.protocol!=='file:'){if((manual||!keyAsked)&&askKey()){}else{syncMsg='Clinic key needed for sync';renderStatus();const lw=$('lwait');if(lw)lw.textContent='Clinic key needed. Reload the page and enter the key from the Admin.';return}}
  if(syncing)return;syncing=true;syncMsg='Syncing…';renderStatus();let pulled=0;const newTk=[];
  try{
   if(!M.autoPushed&&location.protocol!=='file:'){SYNCED.forEach(st=>D[st].forEach(o=>{M.dirty[st+'|'+o.id]=o._u||1}));M.autoPushed=true;saveMeta()}
@@ -734,7 +735,7 @@ views.backup=function(){
  <input type="file" accept=".json,application/json" onchange="restoreFile(this)" style="margin-top:8px"></div>
  <div class="card"><h2>Online sync (server + Supabase database)</h2><p style="margin-top:0">When you open this software from the Render link, every computer and mobile shows the same live data. If internet goes off, billing continues on that computer and everything uploads when internet returns.</p>
  <div class="g2" style="grid-template-columns:1fr"><label class="f">Server address (leave blank when you opened the Render link)<input id="sb_url" value="${esc(S.sbUrl)}" placeholder="https://greenlife.onrender.com"></label></div>
- <div class="row" style="margin-top:8px"><button class="btn" onclick="testCloud()">Save &amp; test connection</button><button class="btn g" onclick="syncNow(true)">Sync now</button><button class="btn o" onclick="if(confirm('Upload ALL data from this computer to the server? Do this once on the main computer, or after the server data was reset.'))pushAll()">Upload everything to server</button><button class="btn l" onclick="window.open(base()+'/api/export')">Download server backup</button></div>
+ <div class="row" style="margin-top:8px"><button class="btn" onclick="testCloud()">Save &amp; test connection</button><button class="btn g" onclick="syncNow(true)">Sync now</button><button class="btn o" onclick="if(confirm('Upload ALL data from this computer to the server? Do this once on the main computer, or after the server data was reset.'))pushAll()">Upload everything to server</button><button class="btn l" onclick="downloadServerBackup()">Download server backup</button></div>
  <div id="sb_res" style="margin-top:8px" class="muted">${cfgOK()?(pending()+' record(s) waiting to upload.'+(M.lastSync?' Last sync '+new Date(M.lastSync).toLocaleString()+'.':'')):'Opened as a file — sync is off. Open the Render link to use online sync.'}</div>
  <div class="muted" style="margin-top:8px">If two computers edit the same record, the later change wins, so keep the computer clocks correct.</div></div>`;
 };

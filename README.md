@@ -13,7 +13,7 @@ Ye software Green Life wale software jaisa hi hai, lekin naam, logo, address aur
 - QR se patient self-booking, WhatsApp slip, online + offline dono, backup, audit log — Green Life jaisa.
 
 ## Pehli baar login
-Admin PIN **1234**, Reception PIN **1111**, Lab PIN **2222** — login ke baad **Users** page se badal dein, aur har desk ka alag user banayein.
+Default PINs setup sheet mein diye gaye hain — login ke baad **Users** page se badal dein, aur har desk ka alag user banayein.
 
 ## Sabse pehle (Admin)
 1. **Tests & Rates:** abhi Green Life wali rates bhari hain. AMR ki apni rate list ho to Excel se copy karke **Import rates** mein paste karein (test ka naam, phir rate).

@@ -119,12 +119,31 @@ def icon():
 
 
 # -------------------------------- API ---------------------------------------
+# Security: staff data APIs need the clinic key (Render env var CLINIC_KEY).
+# Without the right key the server gives nothing (fail closed).
+import hmac
+from functools import wraps
+
+CLINIC_KEY = (os.environ.get("CLINIC_KEY") or "").strip()
+
+
+def need_key(f):
+    @wraps(f)
+    def wrapper(*a, **kw):
+        if not CLINIC_KEY:
+            return jsonify({"error": "Server CLINIC_KEY is not set. Add it in Render > Environment."}), 503
+        got = (request.headers.get("X-Clinic-Key") or "").strip()
+        if not got or not hmac.compare_digest(got.encode(), CLINIC_KEY.encode()):
+            return jsonify({"error": "Wrong or missing clinic key"}), 401
+        return f(*a, **kw)
+    return wrapper
 @app.route("/api/ping")
 def ping():
     return jsonify({"ok": True})
 
 
 @app.route("/api/records", methods=["GET"])
+@need_key
 def get_records():
     since = int(request.args.get("since", 0) or 0)
     limit = min(int(request.args.get("limit", 500) or 500), 1000)
@@ -159,6 +178,7 @@ def _next_ts(cur):
 
 
 @app.route("/api/records", methods=["POST"])
+@need_key
 def post_records():
     rows = request.get_json(force=True, silent=True) or []
     if not isinstance(rows, list):
@@ -203,6 +223,7 @@ def post_records():
 
 
 @app.route("/api/summary")
+@need_key
 def summary():
     conn = get_db()
     cur = conn.cursor()
@@ -213,6 +234,7 @@ def summary():
 
 
 @app.route("/api/export")
+@need_key
 def export_all():
     conn = get_db()
     cur = conn.cursor()
