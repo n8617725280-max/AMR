@@ -1,5 +1,5 @@
 // Offline support: software khulne ke baad internet na ho tab bhi page khul jata hai.
-const CACHE = 'amr-v2';
+const CACHE = 'amr-v3';
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/', '/manifest.json', '/icon.svg'])).then(() => self.skipWaiting()));
 });

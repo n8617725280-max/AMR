@@ -73,6 +73,18 @@ tr.del td{opacity:.45;text-decoration:line-through}
 .sug{position:absolute;z-index:20;left:0;right:0;background:#fff;border:1px solid var(--ln);border-radius:6px;max-height:240px;overflow:auto;box-shadow:0 4px 14px rgba(0,0,0,.12);display:none}
 .sug div{padding:7px 10px;cursor:pointer;border-bottom:1px solid #eef2ef}
 .sug div:hover{background:var(--gl)}
+/* v3: searchable pickers + age boxes */
+.pkw{min-width:0}
+.pkw .sug{max-height:280px}
+.sug div.hi{background:var(--gl)}
+.sug div.pk-add{color:var(--g);font-weight:700}
+.sug div.pk-nf{cursor:default;color:var(--m)}
+.sug div.pk-nf:hover{background:#fff}
+.sug div small{display:block;color:var(--m);font-size:11.5px}
+.agebox{display:flex;gap:6px}
+.agebox span{flex:1;min-width:0}
+.agebox input{text-align:center;padding:8px 4px}
+.agebox small{display:block;font-size:10.5px;color:var(--m);text-align:center;font-weight:400}
 .res{border:1px solid var(--ln);border-radius:6px;max-height:260px;overflow:auto;margin-top:4px;display:none}
 .res div{display:flex;justify-content:space-between;gap:8px;padding:7px 10px;cursor:pointer;border-bottom:1px solid #eef2ef}
 .res div:hover{background:var(--gl)}
@@ -224,6 +236,12 @@ const hasDoc=t=>t!=='LAB', hasLab=t=>t!=='OPD';
 const typeName=t=>t==='OPD'?'OPD':t==='LAB'?'Lab':'OPD + Lab';
 const typeTag=t=>`<span class="tag ${t==='OPD'?'opd':t==='LAB'?'lab':'cmb'}">${typeName(t)}</span>`;
 const ageTxt=a=>/^\d+(\.\d+)?$/.test(String(a||'').trim())?String(a).trim()+' Years':String(a||'');
+/* v3: age in Years / Months / Days. Bill/patient 'age' stays ONE text (e.g. "2 Years 3 Months"), so old records and old screens still work. */
+const APP_VER='v3';
+function ageJoin(y,m,d){const u=(v,w)=>{v=String(v==null?'':v).trim();if(v===''||!(num(v)>0))return'';return v+' '+w+(num(v)===1?'':'s')};return [u(y,'Year'),u(m,'Month'),u(d,'Day')].filter(Boolean).join(' ')}
+function ageParts(a){a=String(a==null?'':a).trim();if(!a)return{y:'',m:'',d:'',ok:true};if(/^\d+(\.\d+)?$/.test(a))return{y:a,m:'',d:'',ok:true};
+ const g=re=>{const x=a.match(re);return x?x[1]:''};const y=g(/(\d+(?:\.\d+)?)\s*(?:y|yr|yrs|year|years)(?![a-z])/i),m=g(/(\d+)\s*(?:m|mo|mon|mons|month|months)(?![a-z])/i),d=g(/(\d+)\s*(?:d|day|days)(?![a-z])/i);return{y,m,d,ok:!!(y||m||d)}}
+function fillAge(f){const p=ageParts(f.age);f.ageY=p.y;f.ageM=p.m;f.ageD=p.d;f.ageOld=p.ok?'':String(f.age||'');return f}
 function weeksText(d){return d.weeks&&d.weeks.length?' ('+d.weeks.map(n=>WK[n]).join(' & ')+' week)':''}
 function schedText(d){return (d.dow||[]).map(i=>DN[i]).join(', ')+weeksText(d)}
 function visitsOn(d,dt=new Date()){if(d.active===false)return false;if(!(d.dow||[]).includes(dt.getDay()))return false;if(d.weeks&&d.weeks.length)return d.weeks.includes(Math.ceil(dt.getDate()/7));return true}
@@ -348,7 +366,13 @@ function renderLogin(){
  <label class="f" style="margin-top:10px">PIN<input id="lp" type="password" inputmode="numeric" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()"></label>
  <div class="err" id="le"></div><div class="muted" id="lwait" style="text-align:center;margin-bottom:8px">${wait?'Loading latest users from the server… please wait':''}</div><button class="btn g" id="lbtn" style="width:100%" onclick="doLogin()" ${wait?'disabled':''}>Sign in</button>
  ${defPin?'<p style="margin-top:12px">First time: Admin PIN <b>1234</b> · Reception PIN <b>1111</b> · Lab (LAB) PIN <b>2222</b>. Change them in Users after signing in.</p>':''}
- <p style="margin-top:14px">Management software help: <b>${HELP_PHONE}</b></p>
+ <div style="margin-top:16px;padding:12px;border-top:1px solid #e3e8ef;text-align:left;font-size:12.5px;line-height:1.5;color:#334">
+ <div style="font-weight:700;color:#155a9c;font-size:13.5px;margin-bottom:4px">About this software</div>
+ <div>Billing, OPD tokens, lab reports, doctor &amp; agent commission and daily reports for clinics, in one simple app. Works on computer and mobile.</div>
+ <div style="margin-top:6px">বিলিং, OPD টোকেন, ল্যাব রিপোর্ট, ডাক্তার ও এজেন্ট কমিশন আর দৈনিক হিসাব, সব এক জায়গায়। কম্পিউটার ও মোবাইলে চলে।</div>
+ <div style="margin-top:8px;padding:8px;background:#f1f6fc;border-radius:6px">Software by <b>UltraAccounting</b> · আপনার ক্লিনিক, দোকান, পেট্রোল পাম্প বা অফিসের জন্য সফটওয়্যার বানাতে যোগাযোগ করুন।<br>
+ Call/WhatsApp: <a href="tel:${HELP_PHONE}"><b>${HELP_PHONE}</b></a> · <a href="https://ultraaccounting-software.onrender.com" target="_blank" rel="noopener">ultraaccounting-software.onrender.com</a></div>
+ </div>
  ${idb?'':'<div class="err">Browser storage is blocked. Open this file in a normal (not private) window, otherwise data will be lost on closing.</div>'}
  </div></div>`;
  setTimeout(()=>{const e=$('lp');if(e)e.focus()},50);
@@ -398,7 +422,7 @@ function render(){
  <div class="help">Management software help<br><a href="tel:${HELP_PHONE}">${HELP_PHONE}</a></div></aside>
  <main class="main"><header class="top"><h1>${esc(title)}</h1><div class="r"><span id="status" class="chip"></span><span class="chip" title="Signed in">${esc(ME.name)} · ${ROLEN[myRole()]}</span><button class="btn l s" onclick="logout()">Logout</button></div></header>
  <div class="view" id="view"></div>
- <div class="foot">Management software help: <a href="tel:${HELP_PHONE}">${HELP_PHONE}</a> · Today ${fd(ymd())}</div></main></div>`;
+ <div class="foot">Management software help: <a href="tel:${HELP_PHONE}">${HELP_PHONE}</a> · Today ${fd(ymd())} <span style="float:right;opacity:.6" title="Software version">${APP_VER}</span></div></main></div>`;
  renderStatus();views[page]();
 }
 
@@ -435,12 +459,14 @@ views.dashboard=function(){
 };
 
 /* ---------- billing ---------- */
-function newForm(type,p){p=p||{};return{type,edit:null,pid:p.id||null,title:p.title||'Mr.',name:p.name||'',age:p.age||'',sex:p.sex||'Male',weight:p.weight||'',phone:p.phone||'',guardian:p.guardian||'',doc:'',fee:0,apptDate:ymd(),apptTime:'',bookingNo:'',items:[],disc:0,paid:'',paidT:false,mode:'Cash',tq:'',tcat:''}}
+function newForm(type,p){return fillAge(newForm0(type,p))}
+function newForm0(type,p){p=p||{};return{type,edit:null,pid:p.id||null,title:p.title||'Mr.',name:p.name||'',age:p.age||'',sex:p.sex||'Male',weight:p.weight||'',phone:p.phone||'',guardian:p.guardian||'',doc:'',fee:0,apptDate:ymd(),apptTime:'',bookingNo:'',items:[],disc:0,paid:'',paidT:false,mode:'Cash',tq:'',tcat:'',agentId:'',ageY:'',ageM:'',ageD:'',ageOld:''}}
 function tot(f){const it=f.items.reduce((s,i)=>s+num(i.r),0),fee=f.type==='LAB'?0:num(f.fee),sub=fee+it,disc=Math.min(Math.max(num(f.disc),0),sub);return{fee,it,sub,disc,net:sub-disc}}
 function ftype(t){F.type=t;if(!hasLab(t))F.items=[];if(t==='LAB'&&F.doc===''){}F.tq='';drawBilling()}
 function fset(k,v){
  if(['fee','disc'].includes(k))F[k]=v===''?'':num(v);
  else if(k==='paid'){F.paid=v===''?'':num(v);F.paidT=true}
+ else if(k==='ageY'||k==='ageM'||k==='ageD'){F[k]=String(v).replace(/[^0-9.]/g,'');const j=ageJoin(F.ageY,F.ageM,F.ageD);F.age=j||(F.ageOld&&!F.ageY&&!F.ageM&&!F.ageD?F.ageOld:'');if(j)F.ageOld=''}
  else F[k]=v;
  if(k==='name'||k==='phone')drawSug();
  calc();
@@ -448,7 +474,7 @@ function fset(k,v){
 function pickDoc(id){F.doc=id;const d=D.doctors.find(x=>x.id===id);F.fee=d&&F.type!=='LAB'?d.fee:0;if($('f_fee'))$('f_fee').value=F.fee;calc()}
 function calc(){const T=tot(F);const paid=F.paidT?num(F.paid):T.net;
  const set=(i,v)=>{const e=$(i);if(e)e.textContent=v};
- set('t_fee','₹ '+inr(T.fee));set('t_tests','₹ '+inr(T.it));set('t_net','₹ '+inr(T.net));set('t_due','₹ '+inr(Math.max(0,T.net-paid)));if($('t_comm'))set('t_comm','₹ '+inr(commOf(F.refId,T.net)));
+ set('t_fee','₹ '+inr(T.fee));set('t_tests','₹ '+inr(T.it));set('t_net','₹ '+inr(T.net));set('t_due','₹ '+inr(Math.max(0,T.net-paid)));if($('t_comm'))set('t_comm','₹ '+inr(commOf(F.refId,T.net)));if($('t_acomm'))set('t_acomm','₹ '+inr(agentCommOf(F.agentId,T.net)));
  const p=$('f_paid');if(p&&!F.paidT)p.value=T.net;
  const dl=$('t_dueline');if(dl)dl.className=T.net-paid>0?'due':'';
 }
@@ -459,7 +485,7 @@ function drawSug(){
  if(!r.length){box.style.display='none';return}
  box.style.display='block';box.innerHTML='<div class="muted" style="cursor:default">Existing patients — tap to use</div>'+r.map(p=>`<div onclick="usePatient('${p.id}')"><span><b>${esc(p.title||'')} ${esc(p.name)}</b> · ${esc(ageTxt(p.age))} ${esc(p.sex||'')}</span><span class="muted">${esc(p.phone||'')} · ${esc(p.pno)}</span></div>`).join('');
 }
-function usePatient(id){const p=D.patients.find(x=>x.id===id);if(!p)return;Object.assign(F,{pid:p.id,title:p.title||'Mr.',name:p.name,age:p.age||'',sex:p.sex||'Male',weight:p.weight||'',phone:p.phone||'',guardian:p.guardian||''});drawBilling()}
+function usePatient(id){const p=D.patients.find(x=>x.id===id);if(!p)return;Object.assign(F,{pid:p.id,title:p.title||'Mr.',name:p.name,age:p.age||'',sex:p.sex||'Male',weight:p.weight||'',phone:p.phone||'',guardian:p.guardian||''});fillAge(F);drawBilling()}
 function newPatientLink(){F.pid=null;drawBilling()}
 function pickCat(c){F.tcat=F.tcat===c?'':c;document.querySelectorAll('#t_pills button').forEach(b=>b.classList.toggle('on',b.dataset.c===F.tcat));drawRes()}
 function drawRes(){
@@ -487,7 +513,7 @@ function drawBilling(){
  <div class="card"><h2>Patient</h2>
   <div class="g2">
    <label class="f">Patient name *<span class="row" style="flex-wrap:nowrap;gap:6px"><select style="width:84px" onchange="fset('title',this.value)">${['Mr.','Mrs.','Miss','Master','Baby','Smt.','Md.'].map(x=>`<option${F.title===x?' selected':''}>${x}</option>`).join('')}</select><input id="f_name" value="${esc(F.name)}" oninput="fset('name',this.value)" autocomplete="off"></span></label>
-   <label class="f">Age<input value="${esc(F.age)}" oninput="fset('age',this.value)" placeholder="e.g. 45"></label>
+   <div class="f"><label class="f" for="f_ageY">Age (Years / Months / Days)</label><div class="agebox"><span><input id="f_ageY" type="number" min="0" max="150" inputmode="numeric" value="${esc(F.ageY)}" oninput="fset('ageY',this.value)" placeholder="0"><small>Years</small></span><span><input id="f_ageM" type="number" min="0" max="11" inputmode="numeric" value="${esc(F.ageM)}" oninput="fset('ageM',this.value)" placeholder="0"><small>Months</small></span><span><input id="f_ageD" type="number" min="0" max="31" inputmode="numeric" value="${esc(F.ageD)}" oninput="fset('ageD',this.value)" placeholder="0"><small>Days</small></span></div>${F.ageOld?`<div class="muted" style="font-size:11.5px">Saved age: <b>${esc(F.ageOld)}</b> (kept unless you fill the boxes)</div>`:''}</div>
    <label class="f">Sex<select onchange="fset('sex',this.value)">${['Male','Female','Other'].map(x=>`<option${F.sex===x?' selected':''}>${x}</option>`).join('')}</select></label>
    <label class="f">Weight (kg)<input value="${esc(F.weight)}" oninput="fset('weight',this.value)"></label>
    <label class="f">Contact no.<input value="${esc(F.phone)}" inputmode="tel" oninput="fset('phone',this.value)" autocomplete="off"></label>
@@ -498,7 +524,8 @@ function drawBilling(){
  </div>
  <div class="card"><h2>${t==='LAB'?'Referred by (optional)':'Doctor &amp; appointment'}</h2>
   <div class="g2">
-   ${t==='LAB'?refSel():`<label class="f">${t==='LAB'?'Doctor':'Doctor *'}<select onchange="pickDoc(this.value)"><option value="">${t==='LAB'?'SELF':'— Select doctor —'}</option>${dopt}</select></label>`}
+   ${t==='LAB'?refSel():pkHTML('doc','Doctor *','Type doctor name, e.g. mamun')}
+   ${pkHTML('agent','Agent (optional)','None — type agent name')}
    ${t!=='LAB'?`<label class="f">OPD fee (₹)<input id="f_fee" type="number" min="0" value="${F.fee}" ${isAdmin()?'':'readonly'} oninput="fset('fee',this.value)"></label>
    <label class="f">Appointment date<input type="date" value="${F.apptDate}" onchange="fset('apptDate',this.value)"></label>
    <label class="f">Time (approx.)<input value="${esc(F.apptTime)}" placeholder="e.g. 11:30 AM" oninput="fset('apptTime',this.value)"></label>
@@ -514,7 +541,7 @@ function drawBilling(){
    <label class="f">Discount (₹)<input id="f_disc" type="number" min="0" value="${F.disc||''}" oninput="fset('disc',this.value)"></label>
    <label class="f">Paid amount (₹)<input id="f_paid" type="number" min="0" value="${F.paidT?F.paid:T.net}" oninput="fset('paid',this.value)"></label>
    <label class="f">Payment mode<select onchange="fset('mode',this.value)">${['Cash','UPI / QR','Card'].map(x=>`<option${F.mode===x?' selected':''}>${x}</option>`).join('')}</select></label></div>
-   <div class="tot"><span>OPD fee</span><b id="t_fee"></b><span>Tests</span><b id="t_tests"></b><span>Net amount</span><b class="big" id="t_net"></b><span id="t_dueline" class="${T.net-paid>0?'due':''}">Due</span><b id="t_due"></b>${isAdmin()&&F.refId?'<span>Commission</span><b id="t_comm"></b>':''}</div></div>
+   <div class="tot"><span>OPD fee</span><b id="t_fee"></b><span>Tests</span><b id="t_tests"></b><span>Net amount</span><b class="big" id="t_net"></b><span id="t_dueline" class="${T.net-paid>0?'due':''}">Due</span><b id="t_due"></b>${isAdmin()&&F.refId?'<span>Commission</span><b id="t_comm"></b>':''}${isAdmin()&&F.agentId?'<span>Agent commission</span><b id="t_acomm"></b>':''}</div></div>
   <div class="mfoot" style="justify-content:flex-start"><button class="btn g" onclick="saveBill(true)">Save &amp; Print</button><button class="btn" onclick="saveBill(false)">Save only</button><button class="btn" style="background:#1da851" onclick="saveBill('wa')">Save &amp; WhatsApp</button>${F.refId&&(D.referrers.find(x=>x.id===F.refId)||{}).phone?'<button class="btn" style="background:#6b4fbb" onclick="saveBill(\'wad\')">Save &amp; message doctor</button>':''}<button class="btn l" onclick="F=newForm(F.type);drawBilling()">Clear form</button></div>
  </div>`;
  drawItems();calc();drawRes();
@@ -530,19 +557,20 @@ function saveBill(print){
  const T=tot(F),paid=F.paidT?num(F.paid):T.net;
  if(paid<0||paid>T.net)return toast('Paid amount cannot be more than the net amount.',true);
  if(T.net<0)return toast('Total cannot be negative.',true);
- const dr=D.doctors.find(d=>d.id===F.doc),today=ymd(),rf=t==='LAB'&&F.refId?D.referrers.find(x=>x.id===F.refId):null;
+ const dr=D.doctors.find(d=>d.id===F.doc),today=ymd(),rf=t==='LAB'&&F.refId?D.referrers.find(x=>x.id===F.refId):null,ag=F.agentId?D.referrers.find(x=>x.id===F.agentId&&isAgent(x)):null;
  const pf={title:F.title,name:F.name.trim(),age:String(F.age).trim(),sex:F.sex,weight:String(F.weight).trim(),phone:F.phone.trim(),guardian:F.guardian.trim()};
  let p=F.pid?D.patients.find(x=>x.id===F.pid):null,newPt=false;
  if(p)p=Object.assign({},p,pf);else{p=Object.assign({id:uid(),pno:fmtPid(nextSeq('pat')),created:today},pf);newPt=true}
  put('patients',p);
- const snap={pid:p.id,pno:p.pno,title:pf.title,name:pf.name,age:pf.age,sex:pf.sex,weight:pf.weight,phone:pf.phone,guardian:pf.guardian,doctorId:dr?dr.id:'',doctorName:dr?dr.name:(rf?rf.name:'SELF'),doctorDeg:dr?dr.deg:(rf?rf.deg||'':''),doctorSpec:dr?dr.spec:'',refId:rf?rf.id:'',refPhone:rf?rf.phone||'':'',comm:rf?commOf(rf.id,T.net):0,apptDate:t==='LAB'?'':F.apptDate,apptTime:t==='LAB'?'':F.apptTime,items:F.items.map(i=>({tid:i.tid,n:i.n,r:num(i.r),del:i.del})),fee:T.fee,disc:T.disc,total:T.net,mode:F.mode,type:t};
+ const snap={pid:p.id,pno:p.pno,title:pf.title,name:pf.name,age:pf.age,sex:pf.sex,weight:pf.weight,phone:pf.phone,guardian:pf.guardian,doctorId:dr?dr.id:'',doctorName:dr?dr.name:(rf?rf.name:'SELF'),doctorDeg:dr?dr.deg:(rf?rf.deg||'':''),doctorSpec:dr?dr.spec:'',refId:rf?rf.id:'',refPhone:rf?rf.phone||'':'',comm:rf?commOf(rf.id,T.net):0,apptDate:t==='LAB'?'':F.apptDate,apptTime:t==='LAB'?'':F.apptTime,items:F.items.map(i=>({tid:i.tid,n:i.n,r:num(i.r),del:i.del})),fee:T.fee,disc:T.disc,total:T.net,mode:F.mode,type:t,agentId:ag?ag.id:'',agentName:ag?ag.name:'',agentPhone:ag?ag.phone||'':'',agentComm:ag?agentCommOf(ag.id,T.net):0};
  let b;
  if(F.edit){
   const old=D.bills.find(x=>x.id===F.edit);if(!old)return toast('Original bill not found.',true);
   b=Object.assign({},old,snap);b.bookingNo=F.bookingNo||old.bookingNo;
   const oldPaid=old.paid;b.pays=(old.pays||[]).slice();if(paid!==oldPaid)b.pays.push({d:today,a:paid-oldPaid,adj:1});
   b.paid=paid;b.due=T.net-paid;
-  log('Edit bill',b.no,`total ${inr(old.total)}→${inr(T.net)}, paid ${inr(oldPaid)}→${inr(paid)}${old.name!==b.name?', name changed':''}`);
+  if((old.agentId||'')!==b.agentId){delete b.agentCommPaidOn;delete b.agentCommPaidBy}
+  log('Edit bill',b.no,`total ${inr(old.total)}→${inr(T.net)}, paid ${inr(oldPaid)}→${inr(paid)}${old.name!==b.name?', name changed':''}${(old.agentId||'')!==b.agentId?', agent '+(old.agentName||'none')+'→'+(b.agentName||'none'):''}${(old.refId||'')!==(b.refId||'')?', referrer changed':''}`);
  }else{
   const no=`${S.billPrefix}-${S.dev}-${t==='OPD'?'OPD':t==='LAB'?'PT':'CB'}-${nextSeq('bill-'+t)}`;
   b=Object.assign({id:uid(),no,bookingNo:F.bookingNo||no,billDate:today,ts:Date.now(),createdBy:ME.name,newPt,pays:paid>0?[{d:today,a:paid}]:[],paid,due:T.net-paid},snap);
@@ -578,7 +606,7 @@ function drawBills(){
  if(!a.length){el.innerHTML='<div class="em">No bills found for these filters.</div>';return}
  const sum=a.reduce((s,b)=>({t:s.t+b.total,p:s.p+b.paid,d:s.d+b.due}),{t:0,p:0,d:0});
  el.innerHTML=`<div class="muted" style="margin-bottom:6px">${a.length} bills${a.length>400?' (showing latest 400)':''} · Total ₹ ${inr(sum.t)} · Paid ₹ ${inr(sum.p)} · Due ₹ ${inr(sum.d)}</div><div class="tw"><table><tr><th>Bill No.</th><th>Date / time</th><th>Patient</th><th>Doctor</th><th>Type</th><th class="n">Total</th><th class="n">Paid</th><th class="n">Due</th><th></th></tr>
- ${a.slice(0,400).map(b=>`<tr><td>${esc(b.no)}</td><td>${fd(b.billDate)}<br><span class="muted">${ftShort(b.ts)}</span></td><td>${esc(b.title)} ${esc(b.name)}<br><span class="muted">${esc(b.phone||'')}</span></td><td>${esc(b.doctorName)}</td><td>${typeTag(b.type)}</td><td class="n">${inr(b.total)}</td><td class="n">${inr(b.paid)}</td><td class="n ${b.due>0?'due':''}">${inr(b.due)}</td>
+ ${a.slice(0,400).map(b=>`<tr><td>${esc(b.no)}</td><td>${fd(b.billDate)}<br><span class="muted">${ftShort(b.ts)}</span></td><td>${esc(b.title)} ${esc(b.name)}<br><span class="muted">${esc(b.phone||'')}</span></td><td>${esc(b.doctorName)}${b.agentName?`<br><span class="muted">Agent: ${esc(b.agentName)}</span>`:''}</td><td>${typeTag(b.type)}</td><td class="n">${inr(b.total)}</td><td class="n">${inr(b.paid)}</td><td class="n ${b.due>0?'due':''}">${inr(b.due)}</td>
  <td style="white-space:nowrap"><button class="btn s" onclick="viewBill('${b.id}')">View / Print</button>${b.due>0&&myRole()!=='doctor'?` <button class="btn o s" onclick="payDue('${b.id}')">Receive due</button>`:''}${isAdmin()?` <button class="btn l s" onclick="editBill('${b.id}')">Edit</button> <button class="btn r s" onclick="delBill('${b.id}')">Delete</button>`:''}</td></tr>`).join('')}</table></div>`;
 }
 function viewBill(id){const b=D.bills.find(x=>x.id===id);if(!b)return;
@@ -589,7 +617,7 @@ function payDue(id){const b=D.bills.find(x=>x.id===id);if(!b)return;const v=prom
  const n=Object.assign({},b);n.pays=(b.pays||[]).concat([{d:ymd(),a}]);n.paid=b.paid+a;n.due=b.due-a;put('bills',n);log('Due received',b.no,'₹'+inr(a));toast('₹ '+inr(a)+' received.');
  printBill(n,'receipt');if(page==='bills')drawBills();else render()}
 function editBill(id){const b=D.bills.find(x=>x.id===id);if(!b)return;
- F=Object.assign(newForm(b.type),{edit:b.id,editNo:b.no,pid:b.pid,title:b.title,name:b.name,age:b.age,sex:b.sex,weight:b.weight,phone:b.phone,guardian:b.guardian,doc:b.doctorId,refId:b.refId||'',fee:b.fee,apptDate:b.apptDate||ymd(),apptTime:b.apptTime||'',bookingNo:b.bookingNo,items:b.items.map(i=>Object.assign({},i)),disc:b.disc,paid:b.paid,paidT:true,mode:b.mode||'Cash'});
+ F=Object.assign(newForm(b.type),{edit:b.id,editNo:b.no,pid:b.pid,title:b.title,name:b.name,age:b.age,sex:b.sex,weight:b.weight,phone:b.phone,guardian:b.guardian,doc:b.doctorId,refId:b.refId||'',fee:b.fee,apptDate:b.apptDate||ymd(),apptTime:b.apptTime||'',bookingNo:b.bookingNo,items:b.items.map(i=>Object.assign({},i)),disc:b.disc,paid:b.paid,paidT:true,mode:b.mode||'Cash',agentId:b.agentId||''});fillAge(F);
  page='billing';render();window.scrollTo(0,0)}
 function delBill(id){const b=D.bills.find(x=>x.id===id);if(!b)return;const why=prompt('Delete bill '+b.no+' ('+b.name+', ₹'+inr(b.total)+')?\nType the reason (required):');if(!why||!why.trim())return;
  const n=Object.assign({},b,{_del:true,delBy:ME.name,delWhy:why.trim()});put('bills',n);log('Delete bill',b.no,why.trim()+' · ₹'+inr(b.total));toast('Bill deleted (kept in audit log).');drawBills()}
@@ -680,8 +708,8 @@ function drawReport(){
 }
 function exportCSV(){
  const a=D.bills.filter(b=>!b._del&&b.billDate>=RF.from&&b.billDate<=RF.to).sort((x,y)=>x.ts-y.ts);
- const h=['Bill No','Date','Time','Type','Patient ID','Patient','Age','Sex','Phone','Doctor','OPD Fee','Tests','Discount','Total','Paid','Due','Created By'];
- const rows=a.map(b=>[b.no,fd(b.billDate),ftShort(b.ts),typeName(b.type),b.pno,b.title+' '+b.name,b.age,b.sex,b.phone,b.doctorName,b.fee,b.items.map(i=>i.n).join('; '),b.disc,b.total,b.paid,b.due,b.createdBy]);
+ const h=['Bill No','Date','Time','Type','Patient ID','Patient','Age','Sex','Phone','Doctor','OPD Fee','Tests','Discount','Total','Paid','Due','Created By','Agent'];
+ const rows=a.map(b=>[b.no,fd(b.billDate),ftShort(b.ts),typeName(b.type),b.pno,b.title+' '+b.name,ageTxt(b.age),b.sex,b.phone,b.doctorName,b.fee,b.items.map(i=>i.n).join('; '),b.disc,b.total,b.paid,b.due,b.createdBy,b.agentName||'']);
  download(BRAND.file+'_Bills_'+RF.from+'_to_'+RF.to+'.csv','\ufeff'+[h].concat(rows).map(r=>r.map(csvCell).join(',')).join('\r\n'),'text/csv');log('Export CSV',RF.from+' to '+RF.to,a.length+' bills')}
 
 /* ---------- users (admin) ---------- */
@@ -829,7 +857,7 @@ function openToken(id){const t=D.tokens.find(x=>x.id===id);if(!t||t.status!=='un
  const p=D.patients.find(x=>x.phone&&x.phone===t.phone&&x.name.trim().toLowerCase()===low);
  F=newForm('OPD',p);
  if(!p){const kid=num(t.age)>0&&num(t.age)<14;Object.assign(F,{title:t.sex==='Female'?(kid?'Baby':'Mrs.'):(kid?'Master':'Mr.'),name:t.name,age:t.age,sex:t.sex,phone:t.phone,guardian:t.guardian||''})}
- Object.assign(F,{doc:t.doctorId,fee:t.fee,apptDate:t.date,apptTime:t.approx||'',bookingNo:'Token '+t.no,tokenId:t.id});
+ fillAge(F);Object.assign(F,{doc:t.doctorId,fee:t.fee,apptDate:t.date,apptTime:t.approx||'',bookingNo:'Token '+t.no,tokenId:t.id});
  page='billing';render();window.scrollTo(0,0)}
 function cancelToken(id){const t=D.tokens.find(x=>x.id===id);if(!t||!confirm('Cancel token #'+t.no+' ('+t.name+')?'))return;put('tokens',Object.assign({},t,{status:'cancelled'}));log('Token cancelled','Token '+t.no,t.name);refreshBadge();drawTokens()}
 function tokenSlipHTML(t){return `<div class="sl"><div class="h"><div class="lg">${logoHTML()}</div><div><b>${esc(S.clinicName+' '+S.sub.replace(' AND ',' & '))}</b><span>${esc(S.slipAddr)}</span><span>Mobile.-${esc(S.slipPhones)}</span></div></div>
@@ -870,7 +898,7 @@ function navItems(){const r=myRole(),a=[['dashboard','Dashboard']],t=allowedType
  if(can('report'))a.push(['labreports','Lab Reports']);
  if(can('bills'))a.push(['bills',r==='doctor'?'My Bills':'Bills']);
  if(can('patients'))a.push(['patients','Patients']);
- if(r==='admin')a.push(['doctors','Doctors'],['referrers','Referring Doctors'],['tests','Tests & Rates'],['signers','Report Signers'],['reports','Reports'],['users','Users']);
+ if(r==='admin')a.push(['doctors','Doctors'],['referrers','Referring Doctors'],['agents','Agents'],['tests','Tests & Rates'],['signers','Report Signers'],['reports','Reports'],['users','Users']);
  if(can('commission'))a.push(['commission','Commission']);
  if(can('qr'))a.push(['qr','QR Poster']);
  if(r==='admin')a.push(['settings','Settings'],['backup','Backup & Sync'],['audit','Audit Log']);
@@ -1071,14 +1099,14 @@ function rateImportGo(){const lines=$('ri_txt').value.split(/\r?\n/);let upd=0,a
 
 /* ===================== REFERRING DOCTORS + COMMISSION ===================== */
 const commOf=(refId,base)=>{const r=D.referrers.find(x=>x.id===refId);return r?Math.round(num(base)*num(r.pct)/100+num(r.flat)):0};
-function refSel(){const list=D.referrers.filter(r=>r.active!==false||r.id===F.refId),cur=F.refId?'r:'+F.refId:(F.doc||'');
- return `<label class="f">Referred by<select onchange="pickRef(this.value)"><option value="">SELF</option>${list.length?`<optgroup label="Referring doctors">${list.map(r=>`<option value="r:${r.id}"${cur==='r:'+r.id?' selected':''}>${esc(r.name)}${r.deg?' — '+esc(r.deg):''}</option>`).join('')}</optgroup>`:''}<optgroup label="Our doctors">${D.doctors.filter(d=>d.active!==false||d.id===F.doc).map(d=>`<option value="${d.id}"${cur===d.id?' selected':''}>${esc(d.name)}</option>`).join('')}</optgroup></select></label>`}
+/* v3: Referred-by is now a type-to-search box (same choices as before: SELF, referring doctors, our doctors) */
+function refSel(){return pkHTML('ref','Referred by','SELF — type doctor name, e.g. mamun')}
 function pickRef(v){if(v.indexOf('r:')===0){F.refId=v.slice(2);F.doc=''}else{F.refId='';F.doc=v}F.fee=0;drawBilling()}
 function waRef(billId){const b=D.bills.find(x=>x.id===billId);if(!b)return;const r=D.referrers.find(x=>x.id===b.refId),ph=b.refPhone||(r&&r.phone)||'';
  if(!ph)return toast('No phone number saved for this doctor (Referring Doctors page).',true);
  const L=['*'+S.clinicName+' '+S.sub+'*','','Dear '+(b.doctorName||'Doctor')+',','Your referred patient *'+b.title+' '+b.name+'*'+(b.age?' ('+ageTxt(b.age)+(b.sex?', '+b.sex:'')+')':'')+' visited us on '+fd(b.billDate)+' for:'];
  b.items.forEach((i,k)=>L.push((k+1)+'. '+i.n));L.push('','Bill No: '+b.no,'Thank you for referring.','',S.addr,'Contact: '+S.recPhones);waOpen(ph,L)}
-views.referrers=function(){const a=D.referrers.slice().sort((x,y)=>x.name.localeCompare(y.name));
+views.referrers=function(){const a=D.referrers.filter(r=>!isAgent(r)).sort((x,y)=>x.name.localeCompare(y.name));
  $('view').innerHTML=`<div class="card"><div class="row" style="justify-content:space-between"><div class="muted">Doctors / clinics who send patients to the lab. Commission is worked out automatically on every bill they refer. Only Admin can see this.</div><button class="btn g" onclick="refForm()">+ Add referring doctor</button></div></div>
  <div class="card tw">${a.length?`<table><tr><th>Name</th><th>Degree / place</th><th>Phone (WhatsApp)</th><th class="n">Commission</th><th>Status</th><th></th></tr>${a.map(r=>`<tr class="${r.active===false?'del':''}"><td><b>${esc(r.name)}</b></td><td>${esc(r.deg||'')}</td><td>${esc(r.phone||'')}</td><td class="n">${num(r.pct)}%${num(r.flat)?' + \u20b9'+inr(r.flat)+'/bill':''}</td><td>${r.active===false?'Inactive':'Active'}</td><td><button class="btn s" onclick="refForm('${r.id}')">Edit</button></td></tr>`).join('')}</table>`:'<div class="em">No referring doctors yet.</div>'}</div>`};
 function refForm(id){const r=id?D.referrers.find(x=>x.id===id):{name:'',deg:'',phone:'',pct:0,flat:0,active:true};
@@ -1099,10 +1127,10 @@ let CMF={from:'',to:''};
 function cmRange(k){const n=new Date();if(k==='today')CMF={from:ymd(),to:ymd()};else if(k==='month')CMF={from:ymd(new Date(n.getFullYear(),n.getMonth(),1)),to:ymd()};else CMF={from:ymd(new Date(n.getFullYear(),n.getMonth()-1,1)),to:ymd(new Date(n.getFullYear(),n.getMonth(),0))};views.commission()}
 views.commission=function(){if(!CMF.from)cmRange('month');
  $('view').innerHTML=`<div class="card"><div class="row"><label class="f">From<input type="date" value="${CMF.from}" onchange="CMF.from=this.value;drawComm()"></label><label class="f">To<input type="date" value="${CMF.to}" onchange="CMF.to=this.value;drawComm()"></label>
- <button class="btn l s" onclick="cmRange('today')">Today</button><button class="btn l s" onclick="cmRange('month')">This month</button><button class="btn l s" onclick="cmRange('last')">Last month</button><button class="btn g" style="margin-left:auto" onclick="cmCSV()">Download CSV (Excel)</button></div></div><div class="card"><div id="cmtable"></div></div>`;drawComm()};
+ <button class="btn l s" onclick="cmRange('today')">Today</button><button class="btn l s" onclick="cmRange('month')">This month</button><button class="btn l s" onclick="cmRange('last')">Last month</button><button class="btn g" style="margin-left:auto" onclick="cmCSV()">Download CSV (Excel)</button></div></div><div class="card"><h2>Referring doctors</h2><div id="cmtable"></div></div><div class="card"><div class="row" style="justify-content:space-between;margin-bottom:8px"><h2 style="margin:0">Agents</h2><button class="btn g s" onclick="agCSV()">Agent CSV (Excel)</button></div><div id="agtable"></div></div>`;drawComm()};
 function commRows(){const m={};D.bills.forEach(b=>{if(b._del||!b.refId||b.billDate<CMF.from||b.billDate>CMF.to)return;const x=m[b.refId]=m[b.refId]||{id:b.refId,bills:[],pts:new Set(),billed:0,comm:0,paid:0};x.bills.push(b);x.pts.add(b.pid);x.billed+=b.total;x.comm+=num(b.comm);if(b.commPaidOn)x.paid+=num(b.comm)});
  return Object.values(m).map(x=>{const r=D.referrers.find(q=>q.id===x.id);x.name=r?r.name:(x.bills[0].doctorName||'');x.phone=r?r.phone:'';return x}).sort((a,b)=>b.comm-a.comm)}
-function drawComm(){const a=commRows(),el=$('cmtable');if(!el)return;
+function drawComm(){drawAgentComm();const a=commRows(),el=$('cmtable');if(!el)return;
  if(!a.length){el.innerHTML='<div class="em">No referred bills in this period.</div>';return}
  const T=a.reduce((s,x)=>({p:s.p+x.pts.size,b:s.b+x.bills.length,t:s.t+x.billed,c:s.c+x.comm,pd:s.pd+x.paid}),{p:0,b:0,t:0,c:0,pd:0});
  el.innerHTML=`<div class="tw"><table><tr><th>Referring doctor</th><th class="n">Patients</th><th class="n">Bills</th><th class="n">Billed \u20b9</th><th class="n">Commission \u20b9</th><th class="n">Paid \u20b9</th><th class="n">Due \u20b9</th><th></th></tr>
@@ -1119,6 +1147,103 @@ function cmWa(id){const x=commRows().find(q=>q.id===id);if(!x)return;
 function cmCSV(){const h=['Referring doctor','Date','Bill No','Patient','Tests','Bill amount','Commission','Paid on'],rows=[];
  commRows().forEach(x=>x.bills.sort((a,b)=>a.ts-b.ts).forEach(b=>rows.push([x.name,fd(b.billDate),b.no,b.title+' '+b.name,b.items.map(i=>i.n).join('; '),b.total,b.comm||0,b.commPaidOn?fd(b.commPaidOn):''])));
  download(BRAND.file+'_Commission_'+CMF.from+'_to_'+CMF.to+'.csv','\ufeff'+[h].concat(rows).map(r=>r.map(csvCell).join(',')).join('\r\n'),'text/csv')}
+
+/* ===================== v3: SEARCHABLE PICKERS (doctor / referred-by / agent) ===================== */
+const isAgent=r=>!!r&&r.kind==='agent';
+const agentCommOf=(id,base)=>{const r=D.referrers.find(x=>x.id===id&&isAgent(x));return r?Math.round(num(base)*num(r.pct)/100+num(r.flat)):0};
+// name matching: ignores "DR", "DR.", "Dr " prefixes, dots, spaces and case; matches any part of the name
+const pkWords=s=>String(s||'').toLowerCase().split(/[\s.,]+/).filter(w=>w&&w!=='dr'&&w!=='dr.');
+const pkNorm=s=>nz(pkWords(s).join(''));
+const pkMatch=(name,q)=>{const ws=pkWords(q).map(nz).filter(Boolean);if(!ws.length)return true;const n=pkNorm(name);return ws.every(w=>n.includes(w))};
+const pkSort=q=>{const qn=pkNorm(q);return(a,b)=>{const x=qn&&pkNorm(a.t).startsWith(qn)?0:1,y=qn&&pkNorm(b.t).startsWith(qn)?0:1;return x-y}};
+const PKC={
+ doc:{
+  cur:()=>{const d=D.doctors.find(x=>x.id===F.doc);return d?d.name:''},
+  opts:q=>{const a=D.doctors.filter(d=>(d.active!==false||d.id===F.doc)&&pkMatch(d.name+' '+(d.spec||''),q)).map(d=>({v:d.id,t:d.name,s:(visitsOn(d)?'● visiting today · ':'')+(d.spec||'')+' · ₹'+inr(d.fee)})).sort(pkSort(q));
+   const qt=q.trim(),exact=qt&&D.doctors.some(d=>pkNorm(d.name)===pkNorm(qt));
+   if(qt&&!exact&&isAdmin())a.push({add:qt,t:'+ Add "'+qt+'" as new doctor'});
+   else if(qt&&!a.length)a.push({nf:1,t:'Doctor not found'+(isAdmin()?'':' — ask Admin to add')});
+   return a},
+  pick:v=>{pickDoc(v);const e=$('pk_doc');if(e)e.value=PKC.doc.cur()},
+  add:name=>{if(!isAdmin())return;const fv=prompt('New doctor: '+name+'\nOPD fee (₹):','300');if(fv===null)return;
+   const o={id:'d'+uid(),name,deg:'',spec:'',fee:num(fv),timing:'',slot:10,dow:[],weeks:[],active:true};put('doctors',o);log('Add doctor (from bill)',name,'fee ₹'+inr(o.fee));toast('Doctor added. Edit days / degree later in Doctors.');pickDoc(o.id);drawBilling()}
+ },
+ ref:{
+  cur:()=>{if(F.refId){const r=D.referrers.find(x=>x.id===F.refId);return r?r.name:''}const d=F.doc&&D.doctors.find(x=>x.id===F.doc);return d?d.name:''},
+  opts:q=>{const qt=q.trim(),a=[];if(!qt)a.push({v:'',t:'SELF',s:'No referring doctor'});
+   const rs=D.referrers.filter(r=>!isAgent(r)&&(r.active!==false||r.id===F.refId)&&pkMatch(r.name,q)).map(r=>({v:'r:'+r.id,t:r.name,s:(r.deg||'Referring doctor')})).sort(pkSort(q));
+   const ds=D.doctors.filter(d=>(d.active!==false||d.id===F.doc)&&pkMatch(d.name,q)).map(d=>({v:d.id,t:d.name,s:'Our doctor'+(d.spec?' · '+d.spec:'')})).sort(pkSort(q));
+   a.push(...rs,...ds);
+   const exact=qt&&(D.referrers.some(r=>!isAgent(r)&&pkNorm(r.name)===pkNorm(qt))||D.doctors.some(d=>pkNorm(d.name)===pkNorm(qt)));
+   if(qt&&!exact&&pkNorm(qt))a.push({add:qt,t:'+ Add "'+qt+'" as new referring doctor'});
+   return a},
+  pick:v=>pickRef(v),
+  add:name=>{const o={id:'rf'+uid(),name,deg:'',phone:'',pct:0,flat:0,active:true};put('referrers',o);log('Add referrer (from bill)',name,'0%');toast('Referring doctor added. Admin can set phone / commission later.');pickRef('r:'+o.id)}
+ },
+ agent:{
+  cur:()=>{const r=F.agentId&&D.referrers.find(x=>x.id===F.agentId);return r?r.name:''},
+  opts:q=>{const qt=q.trim(),a=[];if(!qt)a.push({v:'',t:'None',s:'No agent'});
+   a.push(...D.referrers.filter(r=>isAgent(r)&&(r.active!==false||r.id===F.agentId)&&pkMatch(r.name,q)).map(r=>({v:r.id,t:r.name,s:'Agent'+(r.phone?' · '+r.phone:'')})).sort(pkSort(q)));
+   const exact=qt&&D.referrers.some(r=>isAgent(r)&&pkNorm(r.name)===pkNorm(qt));
+   if(qt&&!exact&&pkNorm(qt))a.push({add:qt,t:'+ Add "'+qt+'" as new agent'});
+   return a},
+  pick:v=>pickAgent(v),
+  add:name=>{const o={id:'ag'+uid(),kind:'agent',name,phone:'',pct:0,flat:0,active:true};put('referrers',o);log('Add agent (from bill)',name,'0%');toast('Agent added. Admin can set phone / commission later.');pickAgent(o.id)}
+ }
+};
+function pickAgent(id){F.agentId=id||'';drawBilling()}
+let PKS={key:'',hi:0,list:[]};
+function pkHTML(key,label,ph){return `<div class="f pkw"><label class="f" for="pk_${key}">${label}</label><div class="sugw"><input id="pk_${key}" value="${esc(PKC[key].cur())}" placeholder="${esc(ph||'')}" autocomplete="off" role="combobox" aria-autocomplete="list" onfocus="this.select();pkShow('${key}','')" oninput="pkShow('${key}',this.value)" onkeydown="pkKey(event,'${key}')" onblur="pkBlur('${key}')"><div class="sug" id="pkl_${key}" role="listbox"></div></div></div>`}
+function pkShow(key,q){const box=$('pkl_'+key);if(!box)return;const list=PKC[key].opts(String(q||'')).slice(0,60);PKS={key,hi:list.findIndex(x=>!x.nf),list};
+ if(!list.length){box.style.display='none';box.innerHTML='';return}
+ box.innerHTML=list.map((x,i)=>`<div data-i="${i}" class="${x.add?'pk-add':x.nf?'pk-nf':''}${i===PKS.hi?' hi':''}" role="option" onmousedown="event.preventDefault()" onclick="pkPick('${key}',${i})">${x.add||x.nf?esc(x.t):`<b>${esc(x.t)}</b>${x.s?`<small>${esc(x.s)}</small>`:''}`}</div>`).join('');
+ box.style.display='block'}
+function pkHi(key,d){const n=PKS.list.length;if(!n)return;let i=PKS.hi;for(let k=0;k<n;k++){i=(i+d+n)%n;if(!PKS.list[i].nf)break}PKS.hi=i;const box=$('pkl_'+key);if(!box)return;[...box.children].forEach((c,j)=>c.classList.toggle('hi',j===i));const el=box.children[i];if(el&&el.scrollIntoView)el.scrollIntoView({block:'nearest'})}
+function pkKey(e,key){const box=$('pkl_'+key),open=box&&box.style.display==='block'&&PKS.key===key;
+ if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();if(!open)pkShow(key,e.target.value===PKC[key].cur()?'':e.target.value);else pkHi(key,e.key==='ArrowDown'?1:-1)}
+ else if(e.key==='Enter'){e.preventDefault();if(open&&PKS.hi>=0)pkPick(key,PKS.hi)}
+ else if(e.key==='Escape'){if(box)box.style.display='none';e.target.value=PKC[key].cur()}}
+function pkPick(key,i){const x=(PKS.key===key?PKS.list:[])[i];if(!x||x.nf)return;const box=$('pkl_'+key);if(box)box.style.display='none';PKS={key:'',hi:0,list:[]};
+ if(x.add)PKC[key].add(x.add);else PKC[key].pick(x.v)}
+function pkBlur(key){setTimeout(()=>{const box=$('pkl_'+key),inp=$('pk_'+key);if(box)box.style.display='none';if(inp&&document.activeElement!==inp)inp.value=PKC[key].cur()},180)}
+
+/* ===================== v3: AGENTS (master) ===================== */
+views.agents=function(){const a=D.referrers.filter(isAgent).sort((x,y)=>x.name.localeCompare(y.name));
+ $('view').innerHTML=`<div class="card"><div class="row" style="justify-content:space-between"><div class="muted">Agents who bring patients. Agent commission is worked out on every bill where the agent is chosen (separate from the referring doctor's commission). Only Admin can see this.</div><button class="btn g" onclick="agentForm()">+ Add agent</button></div></div>
+ <div class="card tw">${a.length?`<table><tr><th>Name</th><th>Phone (WhatsApp)</th><th>Place / note</th><th class="n">Commission</th><th>Status</th><th></th></tr>${a.map(r=>`<tr class="${r.active===false?'del':''}"><td><b>${esc(r.name)}</b></td><td>${esc(r.phone||'')}</td><td>${esc(r.deg||'')}</td><td class="n">${num(r.pct)}%${num(r.flat)?' + \u20b9'+inr(r.flat)+'/bill':''}</td><td>${r.active===false?'Inactive':'Active'}</td><td><button class="btn s" onclick="agentForm('${r.id}')">Edit</button></td></tr>`).join('')}</table>`:'<div class="em">No agents yet.</div>'}</div>`};
+function agentForm(id){const r=id?D.referrers.find(x=>x.id===id):{name:'',deg:'',phone:'',pct:0,flat:0,active:true};
+ modal(`<h2>${id?'Edit agent':'Add agent'}</h2><div class="g2" style="grid-template-columns:1fr">
+ <label class="f">Agent name<input id="ag_name" value="${esc(r.name)}"></label>
+ <label class="f">Phone (WhatsApp)<input id="ag_phone" inputmode="tel" value="${esc(r.phone||'')}"></label>
+ <label class="f">Place / note (optional)<input id="ag_deg" value="${esc(r.deg||'')}"></label>
+ <div class="g2"><label class="f">Commission % of bill amount<input id="ag_pct" type="number" min="0" step="0.5" value="${num(r.pct)}"></label><label class="f">Plus fixed \u20b9 per bill<input id="ag_flat" type="number" min="0" value="${num(r.flat)}"></label></div>
+ <div class="muted" style="font-size:12px">Agent commission = bill net amount \u00d7 % + fixed amount per bill. A new rate is used from the next bill (or when a bill is edited).</div>
+ <label><input type="checkbox" id="ag_act" ${r.active===false?'':'checked'}>Active</label></div>
+ <div class="mfoot"><button class="btn l" onclick="closeModal()">Cancel</button><button class="btn g" onclick="agentSave('${id||''}')">Save</button></div>`)}
+function agentSave(id){const name=$('ag_name').value.trim();if(!name)return toast('Enter the name.',true);
+ const old=id?D.referrers.find(x=>x.id===id):{};put('referrers',Object.assign({id:id||'ag'+uid()},old,{kind:'agent',name,deg:$('ag_deg').value.trim(),phone:$('ag_phone').value.trim(),pct:num($('ag_pct').value),flat:num($('ag_flat').value),active:$('ag_act').checked}));
+ log(id?'Edit agent':'Add agent',name,num($('ag_pct').value)+'% + \u20b9'+num($('ag_flat').value));closeModal();views.agents()}
+
+/* ---------- v3: agent commission report (shown under the referring-doctor commission) ---------- */
+function agentRows(){const m={};D.bills.forEach(b=>{if(b._del||!b.agentId||b.billDate<CMF.from||b.billDate>CMF.to)return;const x=m[b.agentId]=m[b.agentId]||{id:b.agentId,bills:[],pts:new Set(),billed:0,comm:0,paid:0};x.bills.push(b);x.pts.add(b.pid);x.billed+=b.total;x.comm+=num(b.agentComm);if(b.agentCommPaidOn)x.paid+=num(b.agentComm)});
+ return Object.values(m).map(x=>{const r=D.referrers.find(q=>q.id===x.id);x.name=r?r.name:(x.bills[0].agentName||'');x.phone=r?r.phone:(x.bills[0].agentPhone||'');return x}).sort((a,b)=>b.comm-a.comm)}
+function drawAgentComm(){const a=agentRows(),el=$('agtable');if(!el)return;
+ if(!a.length){el.innerHTML='<div class="em">No agent bills in this period.</div>';return}
+ const T=a.reduce((s,x)=>({p:s.p+x.pts.size,b:s.b+x.bills.length,t:s.t+x.billed,c:s.c+x.comm,pd:s.pd+x.paid}),{p:0,b:0,t:0,c:0,pd:0});
+ el.innerHTML=`<div class="tw"><table><tr><th>Agent</th><th class="n">Patients</th><th class="n">Bills</th><th class="n">Billed \u20b9</th><th class="n">Commission \u20b9</th><th class="n">Paid \u20b9</th><th class="n">Due \u20b9</th><th></th></tr>
+ ${a.map(x=>`<tr><td><b>${esc(x.name)}</b><br><span class="muted">${esc(x.phone||'')}</span></td><td class="n">${x.pts.size}</td><td class="n">${x.bills.length}</td><td class="n">${inr(x.billed)}</td><td class="n"><b>${inr(x.comm)}</b></td><td class="n">${inr(x.paid)}</td><td class="n ${x.comm-x.paid>0?'due':''}">${inr(x.comm-x.paid)}</td>
+ <td style="white-space:nowrap"><button class="btn l s" onclick="agDetail('${x.id}')">Details</button>${x.comm-x.paid>0?` <button class="btn o s" onclick="agPay('${x.id}')">Mark paid</button>`:''}${x.phone?` <button class="btn s" style="background:#1da851" onclick="agWa('${x.id}')">WhatsApp</button>`:''}</td></tr>`).join('')}
+ <tr style="font-weight:700;background:var(--gl)"><td>Total</td><td class="n">${T.p}</td><td class="n">${T.b}</td><td class="n">${inr(T.t)}</td><td class="n">${inr(T.c)}</td><td class="n">${inr(T.pd)}</td><td class="n">${inr(T.c-T.pd)}</td><td></td></tr></table></div>`}
+function agDetail(id){const x=agentRows().find(q=>q.id===id);if(!x)return;
+ modal(`<h2>Agent: ${esc(x.name)} <span class="muted" style="font-size:13px">${fd(CMF.from)} \u2013 ${fd(CMF.to)}</span></h2><div class="tw"><table><tr><th>Date</th><th>Bill</th><th>Patient</th><th>Type</th><th class="n">Amount</th><th class="n">Commission</th><th>Paid on</th></tr>${x.bills.sort((a,b)=>a.ts-b.ts).map(b=>`<tr><td>${fd(b.billDate)}</td><td>${esc(b.no)}</td><td>${esc(b.title)} ${esc(b.name)}</td><td>${typeTag(b.type)}</td><td class="n">${inr(b.total)}</td><td class="n">${inr(b.agentComm)}</td><td>${b.agentCommPaidOn?fd(b.agentCommPaidOn):'\u2014'}</td></tr>`).join('')}</table></div><div class="mfoot"><button class="btn l" onclick="closeModal()">Close</button></div>`,true)}
+function agPay(id){const x=agentRows().find(q=>q.id===id);if(!x)return;const due=x.bills.filter(b=>!b.agentCommPaidOn&&num(b.agentComm)>0),amt=due.reduce((s,b)=>s+num(b.agentComm),0);
+ if(!confirm('Mark \u20b9'+inr(amt)+' agent commission as PAID to '+x.name+' for '+fd(CMF.from)+' \u2013 '+fd(CMF.to)+'?'))return;
+ due.forEach(b=>put('bills',Object.assign({},b,{agentCommPaidOn:ymd(),agentCommPaidBy:ME.name})));log('Agent commission paid',x.name,'\u20b9'+inr(amt)+' ('+fd(CMF.from)+' - '+fd(CMF.to)+')');toast('Marked as paid.');drawAgentComm()}
+function agWa(id){const x=agentRows().find(q=>q.id===id);if(!x)return;
+ waOpen(x.phone,['*'+S.clinicName+' '+S.sub+'*','Commission statement for '+x.name,fd(CMF.from)+' to '+fd(CMF.to),'','Patients: '+x.pts.size,'Commission: \u20b9'+inr(x.comm),'Paid: \u20b9'+inr(x.paid),'*Due: \u20b9'+inr(x.comm-x.paid)+'*','','Contact: '+S.recPhones])}
+function agCSV(){const h=['Agent','Date','Bill No','Patient','Type','Bill amount','Agent commission','Paid on'],rows=[];
+ agentRows().forEach(x=>x.bills.sort((a,b)=>a.ts-b.ts).forEach(b=>rows.push([x.name,fd(b.billDate),b.no,b.title+' '+b.name,typeName(b.type),b.total,b.agentComm||0,b.agentCommPaidOn?fd(b.agentCommPaidOn):''])));
+ download(BRAND.file+'_Agent_Commission_'+CMF.from+'_to_'+CMF.to+'.csv','\ufeff'+[h].concat(rows).map(r=>r.map(csvCell).join(',')).join('\r\n'),'text/csv')}
 
 /* ---------- start ---------- */
 async function init(){
